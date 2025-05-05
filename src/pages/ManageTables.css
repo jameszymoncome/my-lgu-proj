@@ -1,0 +1,21 @@
+.main-content {
+    flex-grow: 1;
+    padding: 80px 20px;
+  }
+  
+  .search-bar {
+    padding: 8px;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  header h1 {
+    margin-bottom: 10px;
+  }
+  
+  button {
+    text-transform: none;
+  }
+  

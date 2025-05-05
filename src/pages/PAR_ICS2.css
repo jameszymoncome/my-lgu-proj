@@ -1,0 +1,155 @@
+.home-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+
+.sidebar {
+  width: 250px;
+  background-color: #f4f4f4;
+  padding: 20px;
+}
+
+
+.sidebar .logo {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+
+.sidebar .menu li {
+  list-style: none;
+  margin: 10px 0;
+  cursor: pointer;
+}
+
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+}
+
+
+.header-section-container {
+  margin-bottom: 20px;
+  margin-top: 70px;
+}
+
+
+.header-section-container .header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+
+.header-section-container .left-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: #0f1d9f;
+  margin-left: 10px;
+}
+
+
+.header-section-container .left-column h1 {
+  margin-bottom: 10px;
+}
+
+
+.header-section-container .left-column p {
+  margin-bottom: 20px;
+}
+
+
+.print-button {
+  background-color: #0f1d9f;
+  color: white;
+  border: none;
+  width: 150px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  margin-right: 40px;
+}
+
+
+.print-button svg {
+  margin-right: 5px;
+}
+
+
+.search-dropdown-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
+  padding: 0 10px;  
+}
+
+
+.search-input {
+  width: 70%;
+  padding: 10px;
+  border-radius: 5px;
+  margin-left: 40px;
+}
+
+
+.dropdown {
+  width:30%;  
+  border-radius: 5px;
+
+
+}  .search-icon {
+  color: #0F1D9F;
+  margin-left: 5px;
+}
+
+
+.input-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+
+.input-group {
+  display: flex;
+  align-items: center;
+  width: 48%;
+  margin: flex-start;
+}
+
+
+.text-input {
+  background-color: transparent;
+  border: 2px solid #0F1D9F;
+  border-radius: 5;
+  margin-top: 0px;
+}
+
+
+.label {
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+  font-weight: bold;
+}

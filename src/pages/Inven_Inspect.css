@@ -1,0 +1,56 @@
+.heads {
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.viewBTN {
+    align-self: center;
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+}
+
+.dashBoards {
+    display: flex;
+    justify-content: space-around;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    background-color: #F1F2F7;
+}
+
+.dashBoard_cards {
+    text-align: center;
+}
+
+.dashBoard_cards h1 {
+    font-size: 50px;
+}
+
+
+.miniHead {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.searchBar {
+    padding: 8px 12px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    line-height: normal;
+    font-size: 16px;
+}
+
+.dropdown {
+    font-size: 16px; /* Font size for the selected option */
+    padding: 8px 12px; /* Add padding for a cleaner look */
+    border: 1px solid #ccc; /* Border for the dropdown */
+    border-radius: 4px; /* Rounded corners */
+    background-color: white; /* Background color */
+    color: #333; /* Text color */
+    cursor: pointer; /* Show pointer cursor */
+    width: 150px;
+    box-sizing: border-box; /* Include padding and border in the width/height */
+}

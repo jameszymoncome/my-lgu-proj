@@ -1,0 +1,103 @@
+.home-container {
+    display: flex;
+    height: 100vh; /* Full height of the viewport */
+    width: 100vw; /* Full width of the viewport */
+    font-family: Arial, sans-serif;
+    overflow: hidden; /* Prevent scrolling */
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Sidebar styling */
+  .sidebar {
+    width: 250px;
+    background-color: #f4f4f4;
+    padding: 20px;
+  }
+  
+  .sidebar .logo {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .sidebar .menu li {
+    list-style: none;
+    margin: 10px 0;
+    cursor: pointer;
+  }
+  
+  /* Main content styling */
+  .main-content {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .search-bar {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 90%;
+    background-color: #E4E7F5;
+  }
+  
+  /* Summary cards */
+  .summary-cards {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+  }
+  
+  .card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    flex: 1;
+  }
+  
+  .card img {
+    width: 50px;
+    height: 50px;
+  }
+  
+  /* Actions and Recent Activity */
+  .actions-activity {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #0F1D9F;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+  }
+  
+  .view-record {
+    justify-content: space-between;
+    display: flex;
+  }
+ 
+  

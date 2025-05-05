@@ -1,0 +1,104 @@
+/* Full container for the login page */
+.login-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    font-family: "Arial", sans-serif;
+  }
+  
+  /* Left Section Styling */
+  .left-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #0f1d9f, #1e3bab);
+    color: #fff;
+    text-align: center;
+    width: 40%;
+  }
+  
+  .logo-container {
+    margin-bottom: 2rem;
+  }
+  
+  .logo {
+    width: 300px; /* Adjust based on logo size */
+  }
+  
+  .system-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 1rem;
+  }
+  
+  /* Right Section Styling */
+  .right-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 3rem;
+  }
+  
+  .login-title {
+    color: #0f1d9f;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .welcome-text {
+    color: #707070;
+    margin-bottom: 2rem;
+  }
+  
+  /* Input Fields Styling */
+  .input-field {
+    background-color: #f5f7f9;
+    border-radius: 4px;
+  }
+  
+  .input-field .MuiOutlinedInput-root {
+    fieldset {
+      border-color: #dcdcdc;
+    }
+  }
+  
+  /* Form Options (Remember Me & Forgot Password) */
+  .form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+  }
+  
+  .forgot-password {
+    color: #0f1d9f;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .forgot-password:hover {
+    text-decoration: underline;
+  }
+
+  .minimal-popup {
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  }
+  
+  .swal2-title {
+    font-family: "Arial", sans-serif; /* Clean font */
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .swal2-confirm {
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 8px; /* Rounded button */
+  }
+  

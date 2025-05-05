@@ -1,0 +1,6 @@
+#reader {
+    position: relative;
+    border: 2px solid #0F1D9F; /* Add a border to the scanning area */
+    border-radius: 10px; /* Optional: rounded corners */
+    margin: auto; /* Center the scanner */
+  }

@@ -1,0 +1,8 @@
+:root{
+  font-family: 'DM Sans', sans-serif;
+}
+
+.swal2-container {
+  position: fixed !important;
+  z-index: 1500 !important; /* Ensure it overlays the Drawer */
+}
