@@ -239,15 +239,6 @@ function Item_history() {
           </ListItem>
           <ListItem
             button
-            onClick={() => handleListItemClick(5, "/manage-tables")}
-          >
-            <ListItemIcon>
-              <TableChartIcon/>
-            </ListItemIcon>
-            <ListItemText primary="Manage Tables" />
-          </ListItem>
-          <ListItem
-            button
             onClick={() => handleListItemClick(6, "/ppe-entry")}
           >
             <ListItemIcon>

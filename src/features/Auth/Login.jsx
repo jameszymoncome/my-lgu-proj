@@ -30,7 +30,9 @@ function Login() {
         localStorage.setItem("authToken", data.token);
         localStorage.setItem("userRole", data.accessLevel); // Store user role
         localStorage.setItem("firstName", data.firstName); // Store user's first name
+        localStorage.setItem("userFullName", data.firstName + " " + data.lastname); // Store user's full name
         localStorage.setItem("userId", data.userId); // Store user's ID
+        localStorage.setItem("userDepartment", data.department); // Store user's department
   
         // Show success alert
         Swal.fire({

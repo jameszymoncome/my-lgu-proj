@@ -178,7 +178,7 @@ function Profile() {
         <List>
           <ListItem
             button
-            onClick={() => handleListItemClick(0, "/home")}
+            onClick={() => handleListItemClick(0, "/home-1")}
           >
             <ListItemIcon>
               <HomeIcon/>
@@ -244,15 +244,6 @@ function Profile() {
               <PeopleIcon />
             </ListItemIcon>
             <ListItemText primary="Account Management" />
-          </ListItem>
-          <ListItem
-            button
-            onClick={() => handleListItemClick(5, "/manage-tables")}
-          >
-            <ListItemIcon>
-              <TableChartIcon/>
-            </ListItemIcon>
-            <ListItemText primary="Manage Tables" />
           </ListItem>
           <ListItem
             button

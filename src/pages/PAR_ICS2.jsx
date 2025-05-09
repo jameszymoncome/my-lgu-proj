@@ -353,7 +353,7 @@ function PAR_ICS2() {
         }}
       >
         <List>
-          <ListItem button onClick={() => handleListItemClick(0, "/home")}>
+          <ListItem button onClick={() => handleListItemClick(0, "/home-1")}>
             <ListItemIcon><HomeIcon /></ListItemIcon>
             <ListItemText primary="Home" />
           </ListItem>
@@ -403,10 +403,6 @@ function PAR_ICS2() {
             <ListItemText primary="Account Management" />
           </ListItem>
           {/* Manage Tables and Profile */}
-          <ListItem button onClick={() => handleListItemClick(5, "/manage-tables")}>
-            <ListItemIcon><TableChartIcon /></ListItemIcon>
-            <ListItemText primary="Manage Tables" />
-          </ListItem>
           <ListItem button onClick={() => handleListItemClick(6, "/profile")}>
             <ListItemIcon><AccountCircleIcon /></ListItemIcon>
             <ListItemText primary="Profile" />

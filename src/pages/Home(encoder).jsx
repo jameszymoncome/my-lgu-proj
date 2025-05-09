@@ -106,7 +106,7 @@ function Home_encoder() {
           <ListItem
             button
             style={{ color: "#0F1D9F"}}
-            onClick={() => handleListItemClick(0, "/home")}
+            onClick={() => handleListItemClick(0, "/home-encoder")}
           >
             <ListItemIcon>
               <HomeIcon style={{ color:"#0F1D9F"}} />
@@ -115,12 +115,12 @@ function Home_encoder() {
           </ListItem>
           <ListItem
             button
-            onClick={() => handleListItemClick(1, "/encoder-ppeentry")}
+            onClick={() => handleListItemClick(1, "/purchase-request")}
           >
             <ListItemIcon>
               <AssignmentIcon/>
             </ListItemIcon>
-            <ListItemText primary="PPE Entry Form" />
+            <ListItemText primary="Purchase Request" />
           </ListItem>
           <ListItem
             button

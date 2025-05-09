@@ -444,7 +444,7 @@ const Inspection_Scanner = () => {
         <List>
           <ListItem
             button
-            onClick={() => handleListItemClick(0, "/home")}
+            onClick={() => handleListItemClick(0, "/home-1")}
           >
             <ListItemIcon>
               <HomeIcon  />
@@ -510,16 +510,6 @@ const Inspection_Scanner = () => {
               <PeopleIcon style={{ color: selectedIndex === 7 ? "#0F1D9F" : "inherit" }} />
             </ListItemIcon>
             <ListItemText primary="Account Management" />
-          </ListItem>
-          <ListItem
-            button
-            style={{ color: selectedIndex === 5 ? "#0F1D9F" : "inherit" }}
-            onClick={() => handleListItemClick(5, "/manage-tables")}
-          >
-            <ListItemIcon>
-              <TableChartIcon style={{ color: selectedIndex === 5 ? "#0F1D9F" : "inherit" }} />
-            </ListItemIcon>
-            <ListItemText primary="Manage Tables" />
           </ListItem>
           <ListItem
             button

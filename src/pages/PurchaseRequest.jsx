@@ -43,6 +43,7 @@ function PurchaseRequest() {
   const [userRoles, setUserRoles] = useState("");
   const [userLogRole, setUserLogRole] = useState("");
   const [userId, setUserId] = useState("");
+  const [requestNo, setRequestNo] = useState("");
 
   const [selectedIndex, setSelectedIndex] = useState(null); // Track selected menu item
   const [isReportMenuOpen, setReportMenuOpen] = useState(false); // Track sub-menu visibility
@@ -92,8 +93,16 @@ function PurchaseRequest() {
   useEffect(() => {
     const userLog = localStorage.getItem("userRole");
     const userIds = localStorage.getItem("userId");
+    const depart = localStorage.getItem("userDepartment");
+    const fullName = localStorage.getItem("userFullName");
     setUserLogRole(userLog);
     setUserId(userIds);
+    
+    if (userLog === "CUSTODIAN"){
+      setDepartment(depart);
+      setRequestedName({ full_name: fullName });
+    }
+    setUserRoles(userLog);
 
     const fetchReceivers = async () => {
       try {
@@ -116,6 +125,26 @@ function PurchaseRequest() {
 
     fetchReceivers();
   }, [department]);
+
+  // Fetch Request No. from the backend
+  useEffect(() => {
+    const fetchRequestNo = async () => {
+      try {
+        const response = await axios.get(
+          "http://ppemanagement.andrieinthesun.com/getRequestNo.php"
+        );
+        if (response.data.success) {
+          setRequestNo(response.data.requestNo); // Set the Request No.
+        } else {
+          console.error("Failed to fetch Request No.");
+        }
+      } catch (error) {
+        console.error("Error fetching Request No.:", error);
+      }
+    };
+
+    fetchRequestNo();
+  }, []);
 
   const handleAddItem = () => {
     const newItem = {
@@ -156,6 +185,7 @@ function PurchaseRequest() {
       userRoles: userRoles,
       userLogRole: userLogRole,
       userId: userId,
+      requestNo: requestNo, // Include the Request No.
     });
 
     if (response.data.success) {
@@ -166,7 +196,7 @@ function PurchaseRequest() {
         confirmButtonText: "OK",
       });
     } else {
-      alert("Failed to submit the request.");
+      alert("Failed to submit the request: " + response.data.message);
     }
   } catch (error) {
     console.error("Error submitting for approval:", error);
@@ -196,7 +226,7 @@ function PurchaseRequest() {
             <List>
               <ListItem
                 button
-                onClick={() => handleListItemClick(0, "/home")}
+                onClick={() => handleListItemClick(0, "/home-1")}
               >
                 <ListItemIcon>
                   <HomeIcon  />
@@ -310,8 +340,9 @@ function PurchaseRequest() {
         />
         <TextField
           label="Request No."
-          defaultValue="Draft-2025-001"
+          value={requestNo}
           fullWidth
+          disabled
         />
         <FormControl fullWidth>
           <Autocomplete
@@ -339,6 +370,7 @@ function PurchaseRequest() {
                 fullWidth
               />
             )}
+            disabled={userRoles === "CUSTODIAN"}
           />
         </FormControl>
         <TextField

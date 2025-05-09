@@ -27,6 +27,8 @@ import Notification from "./pages/Notification.jsx";
 import PurchaseRequest from "./pages/PurchaseRequest.jsx";
 import ApprovePR from "./pages/ApprovePR.jsx";
 import ListPR from "./pages/ListPR.jsx";
+import Home_1 from "./pages/Home_1.jsx";
+import Department from "./pages/Department.jsx";
 
 
 function App() {
@@ -65,6 +67,8 @@ function App() {
         <Route path="/purchase-request" element={<PurchaseRequest />} />
         <Route path="/approve-pr" element={<ApprovePR />} />
         <Route path="/list-pr" element={<ListPR />} />
+        <Route path="/home-1" element={<Home_1 />} />
+        <Route path="/department" element={<Department />} />
       </Routes>
     </Router>
   );

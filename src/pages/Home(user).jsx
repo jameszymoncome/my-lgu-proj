@@ -113,6 +113,15 @@ function Home_user() {
             </ListItemIcon>
             <ListItemText primary="Home" />
           </ListItem>
+          <ListItem
+            button
+            onClick={() => handleListItemClick(1, "/purchase-request")}
+          >
+            <ListItemIcon>
+              <AssignmentIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Purchase Request" />
+          </ListItem>
           {/* Main Report Button */}
           <ListItem button onClick={toggleReportMenu}>
             <ListItemIcon>
