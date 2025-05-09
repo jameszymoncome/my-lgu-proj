@@ -108,7 +108,7 @@ function AccountManagement() {
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/accounts");
+        const response = await axios.get("http://ppemanagement.andrieinthesun.com/retrieve_accounts.php");
         setAccounts(response.data.data || []);
       } catch (error) {
         console.error("Error fetching accounts:", error);
@@ -157,12 +157,12 @@ function AccountManagement() {
           </ListItem>
           <ListItem
             button
-            onClick={() => handleListItemClick(1, "/ppe-entry")}
+            onClick={() => handleListItemClick(1, "/purchase-request")}
           >
             <ListItemIcon>
               <AssignmentIcon/>
             </ListItemIcon>
-            <ListItemText primary="PPE Entry Form" />
+            <ListItemText primary="Purchase Request" />
           </ListItem>
           <ListItem
             button

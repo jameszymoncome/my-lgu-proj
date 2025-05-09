@@ -165,9 +165,9 @@ function PAR_ICS1() {
             <ListItemIcon><HomeIcon /></ListItemIcon>
             <ListItemText primary="Home" />
           </ListItem>
-          <ListItem button onClick={() => handleListItemClick(1, "/ppe-entry")}>
+          <ListItem button onClick={() => handleListItemClick(1, "/purchase-request")}>
             <ListItemIcon><AssignmentIcon /></ListItemIcon>
-            <ListItemText primary="PPE Entry Form" />
+            <ListItemText primary="Purchase Request" />
           </ListItem>
           <ListItem button onClick={() => handleListItemClick(2, "/inven-inspect")}>
             <ListItemIcon><ReportIcon /></ListItemIcon>

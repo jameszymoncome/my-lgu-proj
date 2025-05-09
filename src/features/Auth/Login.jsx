@@ -17,7 +17,7 @@ function Login() {
     e.preventDefault();
   
     try {
-      const response = await fetch("http://localhost:5000/login", {
+      const response = await fetch("http://ppemanagement.andrieinthesun.com/login.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -48,9 +48,9 @@ function Login() {
           // Navigate based on user role after the alert is closed
           if (data.accessLevel === "ADMIN") {
             navigate("/home");
-          } else if (data.accessLevel === "ENCODER") {
+          } else if (data.accessLevel === "DEPARTMENT HEAD") {
             navigate("/home-encoder");
-          } else if (data.accessLevel === "View Only") {
+          } else if (data.accessLevel === "CUSTODIAN") {
             navigate("/home-user");
           }
         });

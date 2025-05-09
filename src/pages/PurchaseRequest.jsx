@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -9,21 +9,120 @@ import {
   Paper,
   TextField,
   Button,
+  Autocomplete,
+  FormControl,
 } from "@mui/material";
-import "./PurchaseRequest.css"; // Add custom styles if needed
+import "./PurchaseRequest.css";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { Drawer, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography, Collapse } from "@mui/material";
+import HomeIcon from "@mui/icons-material/Home";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import ReportIcon from "@mui/icons-material/Report";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import TableChartIcon from "@mui/icons-material/TableChart";
+import LogoutIcon from "@mui/icons-material/Logout";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import PeopleIcon from "@mui/icons-material/People";
+import Header from "../components/Header/Header.jsx";
+import { useNavigate } from "react-router-dom";
+
+const drawerWidth = 240;
 
 function PurchaseRequest() {
-  const [items, setItems] = useState([
-    { id: 1, quantity: 1, description: "Laptop", unitPrice: 30000, total: 30000 },
-  ]);
+  const navigate = useNavigate();
+
+  const [items, setItems] = useState([]);
   const [purpose, setPurpose] = useState("");
+  const [department, setDepartment] = useState("");
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [requestedName, setRequestedName] = useState("");
+  const [receiverOptions, setReceiverOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [userRoles, setUserRoles] = useState("");
+  const [userLogRole, setUserLogRole] = useState("");
+  const [userId, setUserId] = useState("");
+
+  const [selectedIndex, setSelectedIndex] = useState(null); // Track selected menu item
+  const [isReportMenuOpen, setReportMenuOpen] = useState(false); // Track sub-menu visibility
+
+  const handleListItemClick = (index, path) => {
+      setSelectedIndex(index);
+      navigate(path);
+    };
+  
+    const handleLogout = (index, path) => {
+      setSelectedIndex(index); // Update the selected menu item
+      Swal.fire({
+        icon: "question",
+        title: "Are you sure?",
+        text: "Do you really want to log out?",
+        showCancelButton: true, // Show the "No" button
+        confirmButtonText: "Yes, Logout",
+        cancelButtonText: "No, Stay",
+        background: "#f9f9f9", // Light background
+        color: "#333", // Dark text color for contrast
+        confirmButtonColor: "#d33", // Red color for "Yes" button
+        cancelButtonColor: "#0F1D9F", // Blue color for "No" button
+        customClass: {
+          popup: "minimal-popup", // Add a custom class for further styling
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Perform logout logic
+          localStorage.clear(); // Clear user data
+          navigate(path); // Redirect to login page
+        } else {
+          // Optional: Handle "No" button click (if needed)
+          console.log("User chose to stay logged in.");
+        }
+      });
+    };
+  
+    const toggleReportMenu = () => {
+      setReportMenuOpen((prev) => !prev);
+    };
+  
+    const handleChange = (event) => {
+      setSelectedOption(event.target.value);
+    };
+
+  // Fetch receiver options when the department changes
+  useEffect(() => {
+    const userLog = localStorage.getItem("userRole");
+    const userIds = localStorage.getItem("userId");
+    setUserLogRole(userLog);
+    setUserId(userIds);
+
+    const fetchReceivers = async () => {
+      try {
+        const response = await axios.get(
+          "http://ppemanagement.andrieinthesun.com/retrieve_users.php",
+          {
+            params: {
+              role: "DEPARTMENT HEAD,CUSTODIAN",
+              search: "",
+              department: department, // Filter by department if available
+            },
+          }
+        );
+        setReceiverOptions(response.data.data || []);
+      } catch (error) {
+        console.error("Error fetching receivers:", error);
+        alert("Failed to fetch receiver options.");
+      }
+    };
+
+    fetchReceivers();
+  }, [department]);
 
   const handleAddItem = () => {
     const newItem = {
       id: items.length + 1,
-      quantity: 1,
+      quantity: "",
       description: "",
-      unitPrice: 0,
+      unitPrice: "",
       total: 0,
     };
     setItems([...items, newItem]);
@@ -32,6 +131,7 @@ function PurchaseRequest() {
   const handleInputChange = (index, field, value) => {
     const updatedItems = [...items];
     updatedItems[index][field] = value;
+
 
     // Update total cost for the item
     if (field === "quantity" || field === "unitPrice") {
@@ -46,12 +146,157 @@ function PurchaseRequest() {
     alert("Saved as Draft!");
   };
 
-  const handleSubmitForApproval = () => {
-    alert("Submitted for Approval!");
-  };
+  const handleSubmitForApproval = async () => {
+  console.log("Submitting for approval...");
+
+  try {
+    const response = await axios.post("http://ppemanagement.andrieinthesun.com/storeRequest.php", {
+      items: items,
+      purpose: purpose,
+      userRoles: userRoles,
+      userLogRole: userLogRole,
+      userId: userId,
+    });
+
+    if (response.data.success) {
+      Swal.fire({
+        icon: "success",
+        title: "Request submitted successfully!",
+        text: `Request No.: ${response.data.custom_id}`,
+        confirmButtonText: "OK",
+      });
+    } else {
+      alert("Failed to submit the request.");
+    }
+  } catch (error) {
+    console.error("Error submitting for approval:", error);
+    alert("Failed to submit for approval.");
+  }
+};
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={{display: "flex"}}>
+      <Header />
+    
+          {/* Drawer*/}
+                  <Drawer
+            variant="permanent"
+            sx={{
+              width: drawerWidth,
+              flexShrink: 0,
+              "& .MuiDrawer-paper": {
+                width: drawerWidth,
+                boxSizing: "border-box",
+                marginTop: "4rem",
+                backgroundColor: "#FFFF",
+                cursor: "pointer",
+              },
+            }}
+          >
+            <List>
+              <ListItem
+                button
+                onClick={() => handleListItemClick(0, "/home")}
+              >
+                <ListItemIcon>
+                  <HomeIcon  />
+                </ListItemIcon>
+                <ListItemText primary="Home" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleListItemClick(1, "/purchase-request")}
+                style={{color: "#0F1D9F"}}
+              >
+                <ListItemIcon>
+                  <AssignmentIcon style={{ color: "#0F1D9F" }}/>
+                </ListItemIcon>
+                <ListItemText primary="Purchase Request" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleListItemClick(1, "/inven-inspect")}
+                
+              >
+                <ListItemIcon>
+                  <ReportIcon  />
+                </ListItemIcon>
+                <ListItemText primary="Inspection" />
+              </ListItem>
+              <ListItem button onClick={toggleReportMenu}>
+                <ListItemIcon>
+                  <ReportIcon/>
+                </ListItemIcon>
+                <ListItemText primary="Records" />
+                {isReportMenuOpen ? <ExpandLess /> : <ExpandMore />}
+              </ListItem>
+              <Collapse in={isReportMenuOpen} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  <ListItem
+                    button
+                    style={{ paddingLeft: 32}}
+                    onClick={() => handleListItemClick(5, "/par-ics")}
+                  >
+                    <ListItemIcon>
+                    <AssignmentIcon/>
+                  </ListItemIcon>
+                    <ListItemText primary="PAR & ICS" />
+                  </ListItem>
+                  <ListItem
+                    button
+                    style={{ paddingLeft: 32}}
+                    onClick={() => handleListItemClick(4, "/inventory")}
+                  >
+                  <ListItemIcon>
+                    <AssignmentIcon/>
+                  </ListItemIcon>
+                    <ListItemText primary="Inventory" />
+                  </ListItem>
+                </List>
+              </Collapse>
+              <ListItem
+                button
+                style={{ color: selectedIndex === 7 ? "#0F1D9F" : "inherit" }}
+                onClick={() => handleListItemClick(7, "/account-management")}
+              >
+                <ListItemIcon>
+                  <PeopleIcon style={{ color: selectedIndex === 7 ? "#0F1D9F" : "inherit" }} />
+                </ListItemIcon>
+                <ListItemText primary="Account Management" />
+              </ListItem>
+              <ListItem
+                button
+                style={{ color: selectedIndex === 5 ? "#0F1D9F" : "inherit" }}
+                onClick={() => handleListItemClick(5, "/manage-tables")}
+              >
+                <ListItemIcon>
+                  <TableChartIcon style={{ color: selectedIndex === 5 ? "#0F1D9F" : "inherit" }} />
+                </ListItemIcon>
+                <ListItemText primary="Manage Tables" />
+              </ListItem>
+              <ListItem
+                button
+                style={{ color: selectedIndex === 6 ? "#0F1D9F" : "inherit" }}
+                onClick={() => handleListItemClick(6, "/profile")}
+              >
+                <ListItemIcon>
+                  <AccountCircleIcon style={{ color: selectedIndex === 6 ? "#0F1D9F" : "inherit" }} />
+                </ListItemIcon>
+                <ListItemText primary="Profile" />
+              </ListItem>
+              <ListItem
+                button
+                style={{ color: selectedIndex === 8 ? "#0F1D9F" : "inherit" }}
+                onClick={() => handleLogout(7, "/")}
+              >
+                <ListItemIcon>
+                  <LogoutIcon />
+                </ListItemIcon>
+                <ListItemText primary="Logout" />
+              </ListItem>
+            </List>
+          </Drawer>
+    <div style={{padding: "20px", marginTop: "3.5rem" }}>
       <h1 style={{ color: "#0F1D9F" }}>Purchase Request</h1>
       <p style={{ color: "#666" }}>Record of Property or Equipment Issued</p>
 
@@ -60,7 +305,6 @@ function PurchaseRequest() {
         <TextField
           label="Date"
           type="date"
-          defaultValue="2025-05-03"
           InputLabelProps={{ shrink: true }}
           fullWidth
         />
@@ -69,15 +313,39 @@ function PurchaseRequest() {
           defaultValue="Draft-2025-001"
           fullWidth
         />
-        <TextField
-          label="Requested By"
-          defaultValue="Juan Dela Cruz"
-          fullWidth
-        />
+        <FormControl fullWidth>
+          <Autocomplete
+            options={receiverOptions} // List of names for the search
+            value={requestedName} // Current selected value
+            onChange={(event, newValue) => {
+              setRequestedName(newValue); // Update the state with the selected value
+              if (newValue) {
+                setDepartment(newValue.department); // Update department with the selected user's department
+                setUserRoles(newValue.role); // Update user roles with the selected user's role
+              }
+            }}
+            filterOptions={(options, { inputValue }) =>
+              options.filter((option) =>
+                option.full_name
+                  .toLowerCase()
+                  .includes(inputValue.toLowerCase())
+              )
+            }
+            getOptionLabel={(option) => option.full_name || ""}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Requested By"
+                fullWidth
+              />
+            )}
+          />
+        </FormControl>
         <TextField
           label="Department"
-          defaultValue="Planning and Development Office"
+          value={department}
           fullWidth
+          disabled
         />
       </div>
 
@@ -103,7 +371,7 @@ function PurchaseRequest() {
                     type="number"
                     value={item.quantity}
                     onChange={(e) =>
-                      handleInputChange(index, "quantity", parseInt(e.target.value) || 0)
+                      handleInputChange(index, "quantity", parseInt(e.target.value))
                     }
                     fullWidth
                   />
@@ -206,6 +474,7 @@ function PurchaseRequest() {
           Submit for Approval
         </Button>
       </div>
+    </div>
     </div>
   );
 }

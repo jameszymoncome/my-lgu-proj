@@ -63,7 +63,7 @@ function AddAccount() {
     "MPDO",
   ];
 
-  const roles = ["ENCODER", "ADMIN", "USER(VIEWING ONLY)"];
+  const roles = ["ADMIN", "DEPARTMENT HEAD", "CUSTODIAN"];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -80,7 +80,7 @@ function AddAccount() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/create-account", {
+      const response = await fetch("http://ppemanagement.andrieinthesun.com/add_account.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -143,12 +143,12 @@ function AddAccount() {
           </ListItem>
           <ListItem
             button
-            onClick={() => handleListItemClick(1, "/ppe-entry")}
+            onClick={() => handleListItemClick(1, "/purchase-request")}
           >
             <ListItemIcon>
               <AssignmentIcon/>
             </ListItemIcon>
-            <ListItemText primary="PPE Entry Form" />
+            <ListItemText primary="Purchase Request" />
           </ListItem>
           <ListItem
             button

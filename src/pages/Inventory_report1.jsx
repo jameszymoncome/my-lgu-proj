@@ -134,12 +134,12 @@ function Inventory_report1() {
           </ListItem>
           <ListItem
             button
-            onClick={() => handleListItemClick(1, "/ppe-entry")}
+            onClick={() => handleListItemClick(1, "/purchase-request")}
           >
             <ListItemIcon>
               <AssignmentIcon/>
             </ListItemIcon>
-            <ListItemText primary="PPE Entry Form" />
+            <ListItemText primary="Purchase Request" />
           </ListItem>
           <ListItem
             button
