@@ -1,12 +1,7 @@
 import React, { useState } from "react";
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import { Doughnut } from "react-chartjs-2";
 import "./Home_1.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faCamera, faClipboard } from "@fortawesome/free-solid-svg-icons";
 import {
   Drawer,
   List,
@@ -25,15 +20,27 @@ import {
   Logout as LogoutIcon,
   ExpandLess,
   ExpandMore,
+  Add as AddIcon,
+  QrCode as QrCodeIcon,
+  List as ListIcon,
 } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header/Header.jsx";
+import { FaEye } from "react-icons/fa";
+import Header from "../components/Header/Header.jsx"; // Import the Header component
+import { Notifications, NotificationsActive, NotificationsNone, NotificationsOff } from "@mui/icons-material";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Doughnut } from "react-chartjs-2";
+
+// Register required elements
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const drawerWidth = 240;
-
-// Register required chart.js elements
-ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Home_1 = () => {
   const navigate = useNavigate();
@@ -65,48 +72,97 @@ const Home_1 = () => {
     });
   };
 
-  const userData = React.useMemo(() => ({
-    labels: ["Admins", "Users", "Guests"],
-    datasets: [
-      {
-        label: "User Roles",
-        data: [10, 50, 5],
-        backgroundColor: ["#36A2EB", "#FF6384", "#FFCE56"],
-        borderColor: ["#fff", "#fff", "#fff"],
-        borderWidth: 1,
-      },
-    ],
-  }), []);
+  // Example user role (can be dynamically set based on authentication)
+    const userRole = "ADMIN"; // Change to "dept head" or "custodian" as needed
 
-  const options = React.useMemo(() => ({
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "bottom",
-      },
-      title: {
-        display: true,
-        text: "User Distribution",
-      },
-    },
-  }), []);
+    // Data for the Doughnut chart
+    const userData = {
+        labels: ["DEPARTMENT HEAD", "CUSTODIAN"],
+        datasets: [
+            {
+                data: userRole === "ADMIN" ? [300, 50] : userRole === "DEPARTMENT HEAD" ? [150, 50] : [50, 10],
+                backgroundColor: ["#36A2EB", "#FF6384"],
+                hoverBackgroundColor: ["#36A2EB", "#FF6384"],
+            },
+        ],
+    };
 
-  const statsData = [
-    { label: "No. of Fixed Assets", value: "1,000" },
-    { label: "Fixed Assets for Maintenance/Repair", value: "47" },
-    { label: "Departments/Offices", value: "45" },
-    { label: "Inspection Month", value: "JUNE 2025", large: true },
-  ];
+    const options = {
+        plugins: {
+            legend: {
+                display: true, // Enable the legend
+                position: "bottom", // Position the legend below the chart
+                labels: {
+                    boxWidth: 15, // Size of the legend color box
+                    padding: 10, // Spacing between legend items
+                    font: {
+                        size: 12, // Font size for legend text
+                    },
+                },
+            },
+        },
+    };
 
-  const activities = [
-    { date: '2025-06-20', description: 'Added new item', status: 'Completed' },
-    { date: '2025-06-19', description: 'Scanned package', status: 'Pending' },
-    { date: '2025-06-18', description: 'Requested delivery', status: 'In Progress' },
-  ];
+    // Define stats and user card content based on user role
+    const stats =
+        userRole === "ADMIN"
+            ? [
+                  { title: "No. of Fixed Assets", value: "1,000" },
+                  { title: "Departments/Offices", value: "45" },
+                  { title: "Fixed Assets for Maintenance/Repair", value: "47" },
+                  { title: "Pending Purchase Requests", value: "5" },
+                  { title: "Inspection Month", value: "JUNE 2025" },
+              ]
+            : userRole === "DEPARTMENT HEAD"
+            ? [
+                  { title: "No. of Fixed Assets", value: "300" },
+                  { title: "Fixed Assets for Maintenance/Repair", value: "10" },
+                  { title: "Inspection Month", value: "JUNE 2025" },
+                  { title: "Pending Purchase Requests", value: "5" },
+                  { title: "Last Inspection Date", value: "May 2025" },
+              ]
+            : userRole === "CUSTODIAN"
+            ? [
+                  { title: "Assets Assigned to Me", value: "50" },
+                  { title: "Assets Marked for Repair", value: "5" },
+                  { title: "Inspection Month", value: "JUNE 2025" },
+              ]
+            : [];
+
+    const userCardTitle =
+        userRole === "ADMIN"
+            ? "USER"
+            : userRole === "DEPARTMENT HEAD"
+            ? "USER"
+            : userRole === "CUSTODIAN"
+            ? "USER"
+            : "USER";
+
+    // Example data for requests
+    const allRequests = [
+        { date: "2023-10-01", department: "IT Department", status: "Pending" },
+        { date: "2023-09-28", department: "HR Department", status: "Approved" },
+        { date: "2023-09-25", department: "Finance", status: "Rejected" },
+        { date: "2023-09-20", department: "IT Department", status: "Approved" },
+        { date: "2023-09-18", department: "HR Department", status: "Pending" },
+    ];
+
+    // Filter data based on user role
+    const filteredRequests =
+        userRole === "ADMIN"
+            ? allRequests // Admin sees all requests
+            : userRole === "DEPARTMENT HEAD"
+            ? allRequests.filter((request) => request.department === "IT Department") // Example: Department Head sees only their department's requests
+            : userRole === "CUSTODIAN"
+            ? allRequests.filter((request) => request.department === "IT Department" && request.status === "Pending") // Example: Custodian sees only their pending requests
+            : [];
 
   return (
     <div className="home-container">
+      {/* Header */}
       <Header />
+
+      {/* Sidebar Drawer */}
       <Drawer
         variant="permanent"
         sx={{
@@ -134,6 +190,12 @@ const Home_1 = () => {
             </ListItemIcon>
             <ListItemText primary="Purchase Request" />
           </ListItem>
+          <ListItem button onClick={() => handleListItemClick("/purchase-list")}>
+            <ListItemIcon>
+              <AssignmentIcon />
+            </ListItemIcon>
+            <ListItemText primary="Purchase List" />
+          </ListItem>
           <ListItem button onClick={() => handleListItemClick("/inven-inspect")}>
             <ListItemIcon>
               <ReportIcon />
@@ -154,6 +216,9 @@ const Home_1 = () => {
                 style={{ paddingLeft: 32 }}
                 onClick={() => handleListItemClick("/par-ics")}
               >
+                <ListItemIcon>
+                                <AssignmentIcon/>
+                              </ListItemIcon>
                 <ListItemText primary="PAR & ICS" />
               </ListItem>
               <ListItem
@@ -161,6 +226,9 @@ const Home_1 = () => {
                 style={{ paddingLeft: 32 }}
                 onClick={() => handleListItemClick("/inventory")}
               >
+                <ListItemIcon>
+                                <AssignmentIcon/>
+                              </ListItemIcon>
                 <ListItemText primary="Inventory" />
               </ListItem>
             </List>
@@ -171,11 +239,11 @@ const Home_1 = () => {
             </ListItemIcon>
             <ListItemText primary="Account Management" />
           </ListItem>
-          <ListItem button onClick={() => handleListItemClick("/manage-tables")}>
+          <ListItem button onClick={() => handleListItemClick("/notification")}>
             <ListItemIcon>
-              <TableChartIcon />
+              <Notifications />
             </ListItemIcon>
-            <ListItemText primary="Manage Tables" />
+            <ListItemText primary="Notification" />
           </ListItem>
           <ListItem button onClick={() => handleListItemClick("/profile")}>
             <ListItemIcon>
@@ -191,60 +259,130 @@ const Home_1 = () => {
           </ListItem>
         </List>
       </Drawer>
-      <div className="main-content" style={{marginTop: "4rem"}}>
-        <header className="home-header">
-          <div className="header-content">
-            <h1>Welcome to the Inventory Management System</h1>
-          </div>
-          <hr className="header-divider" />
-        </header>
-        <div className="dashboard-layout">
-          <div className="stat-card user-card">
-            <h3>USER</h3>
-            <div className="donut-chart">
-              <Doughnut data={userData} options={options} />
+
+      <div className="main-content">
+            <header className="home-header">
+                <div className="header-content">
+                    <h1>
+                        {userRole === "ADMIN"
+                            ? "Welcome Admin, to the Inventory Management System"
+                            : userRole === "DEPARTMENT HEAD"
+                            ? "Welcome Department Head, to the Inventory Management System"
+                            : userRole === "CUSTODIAN"
+                            ? "Welcome Custodian, to the Inventory Management System"
+                            : "Welcome to the Inventory Management System"}
+                    </h1>
+                </div>
+                <hr className="header-divider" />
+            </header>
+
+            {/* Dashboard Layout */}
+            <div className="dashboard-layout">
+                {/* User Card */}
+                <div className="stat-card user-card">
+                    <h3 className="user-title">{userCardTitle}</h3>
+                    <div className="donut-chart-container">
+                        <Doughnut data={userData} options={options} />
+                    </div>
+                </div>
+
+                {/* Stat Cards */}
+                <div className="stat-group">
+                    {stats.map((stat, index) => (
+                        <div className="stat-card" key={index}>
+                            <div className="stat-row">
+                                <h3>{stat.title}</h3>
+                                <span className="stat-value">{stat.value}</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
-          </div>
-          <div className="stat-group">
-            {statsData.map((stat, index) => (
-              <div className="stat-card" key={index}>
-                <h3>{stat.label}</h3>
-                <span className={`stat-value ${stat.large ? "large" : ""}`}>
-                  {stat.value}
-                </span>
-              </div>
-            ))}
-          </div>
-          <div>
-            <div className="button-stack">
-              <button>Add Item</button>
-              <button>Scan</button>
-              <button>Request</button>
+            <div className="quick-links-and-table">
+                {/* Quick Links Section */}
+                <div className="quick-links">
+                    {userRole === "admin" && (
+                        <>
+                            <button className="quick-link">
+                                <div className="icon">
+                                    <FontAwesomeIcon icon={faClipboard} />
+                                </div>
+                                <span>Request</span>
+                            </button>
+                            <button className="quick-link">
+                                <div className="icon">
+                                    <FontAwesomeIcon icon={faCamera} />
+                                </div>
+                                <span>Scan</span>
+                            </button>
+                            <button className="quick-link">
+                                <div className="icon">
+                                    <FontAwesomeIcon icon={faPlus} />
+                                </div>
+                                <span>Reports</span>
+                            </button>
+                        </>
+                    )}
+
+                    {userRole === "dept head" && (
+                        <>
+                            <button className="quick-link">
+                                <div className="icon">
+                                    <FontAwesomeIcon icon={faClipboard} />
+                                </div>
+                                <span>Request</span>
+                            </button>
+                            <button className="quick-link">
+                                <div className="icon">
+                                    <FontAwesomeIcon icon={faCamera} />
+                                </div>
+                                <span>Scan</span>
+                            </button>
+                            <button className="quick-link">
+                                <div className="icon">
+                                    <FontAwesomeIcon icon={faPlus} />
+                                </div>
+                                <span>Reports</span>
+                            </button>
+                        </>
+                    )}
+
+                    {userRole === "custodian" && (
+                        <>
+                            <button className="quick-link">
+                                <div className="icon">
+                                    <FontAwesomeIcon icon={faClipboard} />
+                                </div>
+                                <span>Request</span>
+                            </button>
+                        </>
+                    )}
+                </div>
+
+                {/* Recently Added Purchase Requests Table */}
+                <div className="recent-requests">
+                    <h3>Recently Added Requests</h3>
+                    <table className="recent-requests-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Department</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredRequests.map((request, index) => (
+                                <tr key={index}>
+                                    <td>{request.date}</td>
+                                    <td>{request.department}</td>
+                                    <td>{request.status}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div>
-              <h2>Recent Activity</h2>
-              <table className="activity-table">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Activity</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {activities.map((activity, index) => (
-                    <tr key={index}>
-                      <td>{activity.date}</td>
-                      <td>{activity.description}</td>
-                      <td>{activity.status}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
   );
 };

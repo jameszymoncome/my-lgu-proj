@@ -27,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import axios from "axios";
 import Swal from 'sweetalert2';
+import { Notifications, NotificationsActive, NotificationsNone, NotificationsOff } from "@mui/icons-material";
 
 const drawerWidth = 240;
 
@@ -35,8 +36,7 @@ function Profile() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isReportMenuOpen, setReportMenuOpen] = useState(false);
   
-  const handleListItemClick = (index, path) => {
-      setSelectedIndex(index);
+  const handleListItemClick = (path) => {
       navigate(path);
   };
 
@@ -103,17 +103,30 @@ function Profile() {
     "MPDO",
   ];
   
-  const roles = ["ENCODER", "ADMIN", "USER(VIEWING ONLY)"];
+  const roles = ["ADMIN", "DEPARTMENT HEAD", "CUSTODIAN"];
   
   const [isEditing, setIsEditing] = useState(false);
 
   // Fetch Profile Data
   useEffect(() => {
-    axios
-      .get(`http://localhost:5000/profile/${userID}`)
-      .then((res) => setProfile(res.data.data))
-      .catch((err) => console.error("Error fetching profile:", err));
-  }, [userID]);
+  const fetchProfile = async () => {
+    try {
+      const response = await axios.get(`http://ppemanagement.andrieinthesun.com/profile.php?user_id=${userID}`);
+      if (response.data.success) {
+        setProfile(response.data.data); // Set the profile data
+      } else {
+        Swal.fire("Error!", response.data.message, "error");
+      }
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      Swal.fire("Error!", "Failed to fetch profile data.", "error");
+    }
+  };
+
+  if (userID) {
+    fetchProfile();
+  }
+}, [userID]);
 
   // Handle Form Change
   const handleChange = (e) => {
@@ -122,160 +135,161 @@ function Profile() {
   };
 
   // Update Profile
-  const handleUpdate = () => {
-    axios
-      .put(`http://localhost:5000/profile/${userID}`, profile)
-      .then((res) => {
-        alert(res.data.message);
-        setIsEditing(false);
-      })
-      .catch((err) => console.error("Error updating profile:", err));
-  };
+  const handleUpdate = async () => {
+  try {
+    const response = await axios.put("http://ppemanagement.andrieinthesun.com/edit_profile.php", {
+      user_id: userID,
+      ...profile, // Spread the profile object to send all fields
+    });
+
+    if (response.data.success) {
+      Swal.fire("Success!", response.data.message, "success");
+      setIsEditing(false); // Exit editing mode
+    } else {
+      Swal.fire("Error!", response.data.message, "error");
+    }
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    Swal.fire("Error!", "Failed to update profile.", "error");
+  }
+};
 
   // Delete Profile
-  const handleDelete = () => {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'No, cancel!',
-      reverseButtons: true,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(`http://localhost:5000/profile/${userID}`)
-          .then((res) => {
-            Swal.fire('Deleted!', res.data.message, 'success');
-          })
-          .catch((err) => {
-            console.error("Error deleting profile:", err);
-            Swal.fire('Error!', 'There was an issue deleting your profile.', 'error');
-          });
-      } else {
+  const handleDelete = async () => {
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete it!",
+    cancelButtonText: "No, cancel!",
+    reverseButtons: true,
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        const response = await axios.delete(`http://ppemanagement.andrieinthesun.com/profile.php?user_id=${userID}`);
+        if (response.data.success) {
+          Swal.fire("Deleted!", response.data.message, "success");
+          navigate("/login"); // Redirect to login after deletion
+        } else {
+          Swal.fire("Error!", response.data.message, "error");
+        }
+      } catch (error) {
+        console.error("Error deleting profile:", error);
+        Swal.fire("Error!", "Failed to delete profile.", "error");
       }
-    });
-  };
+    }
+  });
+};
 
   return (
     <div style={{ display: "flex" }}>
       <Header />
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            boxSizing: "border-box",
-            marginTop: "4rem",
-            backgroundColor: "#FFFF",
-            cursor: "pointer",
-          },
-        }}
-      >
-        <List>
-          <ListItem
-            button
-            onClick={() => handleListItemClick(0, "/home-1")}
-          >
-            <ListItemIcon>
-              <HomeIcon/>
-            </ListItemIcon>
-            <ListItemText primary="Home" />
-          </ListItem>
-          <ListItem
-            button
-            onClick={() => handleListItemClick(1, "/purchase-request")}
-          >
-            <ListItemIcon>
-              <AssignmentIcon/>
-            </ListItemIcon>
-            <ListItemText primary="Purchase Request" />
-          </ListItem>
-          <ListItem
-            button
-            onClick={() => handleListItemClick(2, "/inven-inspect")}
-          >
-            <ListItemIcon>
-              <ReportIcon/>
-            </ListItemIcon>
-            <ListItemText primary="Inspection" />
-          </ListItem>
-          {/* Main Report Button */}
-          <ListItem button onClick={toggleReportMenu}>
-            <ListItemIcon>
-              <ReportIcon />
-            </ListItemIcon>
-            <ListItemText primary="Records" />
-            {isReportMenuOpen ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          {/* Sub-Buttons (collapsible) */}
-          <Collapse in={isReportMenuOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItem
-                button
-                style={{ paddingLeft: 32}}
-                onClick={() => handleListItemClick(5, "/par-ics")}
-              >
-                <ListItemIcon>
-                <AssignmentIcon/>
-              </ListItemIcon>
-                <ListItemText primary="PAR & ICS" />
-              </ListItem>
-              <ListItem
-                button
-                style={{ paddingLeft: 32}}
-                onClick={() => handleListItemClick(4, "/inventory")}
-              >
-              <ListItemIcon>
-                <AssignmentIcon/>
-              </ListItemIcon>
-                <ListItemText primary="Inventory" />
-              </ListItem>
-            </List>
-          </Collapse>
-          <ListItem
-            button
-            onClick={() => handleListItemClick(4, "/account-management")}
-          >
-            <ListItemIcon>
-              <PeopleIcon />
-            </ListItemIcon>
-            <ListItemText primary="Account Management" />
-          </ListItem>
-          <ListItem
-            button
-            onClick={() => handleListItemClick(6, "/profile")}
-            style={{ color:"#0F1D9F" }}
-          >
-            <ListItemIcon>
-              <AccountCircleIcon style={{ color: "#0F1D9F"}} />
-            </ListItemIcon>
-            <ListItemText primary="Profile" />
-          </ListItem>
-          {/* Add other ListItems similarly */}
-          <ListItem 
-            button
-            onClick={() => handleLogout(7, "/")}>
-            <ListItemIcon>
-              <LogoutIcon />
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItem>
-        </List>
-      </Drawer>
+<Drawer
+              variant="permanent"
+              sx={{
+                width: drawerWidth,
+                flexShrink: 0,
+                "& .MuiDrawer-paper": {
+                  width: drawerWidth,
+                  boxSizing: "border-box",
+                  marginTop: "4rem",
+                  backgroundColor: "#FFFF",
+                  cursor: "pointer",
+                },
+              }}
+            >
+              <List>
+                <ListItem button onClick={() => handleListItemClick("/home-1")}>
+                  <ListItemIcon>
+                    <HomeIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Home" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/purchase-request")} >
+                  <ListItemIcon>
+                    <AssignmentIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Purchase Request" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/purchase-list")} >
+                  <ListItemIcon>
+                    <AssignmentIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary="Purchase List" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/inven-inspect")}  >
+                  <ListItemIcon>
+                    <ReportIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary="Inspection" />
+                </ListItem>
+                <ListItem button onClick={toggleReportMenu}>
+                  <ListItemIcon>
+                    <ReportIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Records" />
+                  {isReportMenuOpen ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={isReportMenuOpen} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItem
+                      button
+                      style={{ paddingLeft: 32 }}
+                      onClick={() => handleListItemClick("/par-ics")}
+                    >
+                      <ListItemIcon>
+                                      <AssignmentIcon/>
+                                    </ListItemIcon>
+                      <ListItemText primary="PAR & ICS" />
+                    </ListItem>
+                    <ListItem
+                      button
+                      style={{ paddingLeft: 32 }}
+                      onClick={() => handleListItemClick("/inventory")}
+                    >
+                      <ListItemIcon>
+                                      <AssignmentIcon/>
+                                    </ListItemIcon>
+                      <ListItemText primary="Inventory" />
+                    </ListItem>
+                  </List>
+                </Collapse>
+                <ListItem button onClick={() => handleListItemClick("/account-management")} >
+                  <ListItemIcon>
+                    <PeopleIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Account Management" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/notification")} >
+                  <ListItemIcon>
+                    <Notifications />
+                  </ListItemIcon>
+                  <ListItemText primary="Notification" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/profile")} style={{ color: "#0F1D9F"}}>
+                  <ListItemIcon>
+                    <AccountCircleIcon style={{ color: "#0F1D9F"}}/>
+                  </ListItemIcon>
+                  <ListItemText primary="Profile" />
+                </ListItem>
+                <ListItem button onClick={handleLogout}>
+                  <ListItemIcon>
+                    <LogoutIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Logout" />
+                </ListItem>
+              </List>
+            </Drawer>
 
       {/* Profile Form */}
       <div style={{ padding: "2rem", backgroundColor: "#fff", flex: 1 }}>
         <Typography variant="h4" gutterBottom style={{ color: "#0F1D9F" }}>
           Profile
         </Typography>
-        {/* Profile Form */}
         <form style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
           {Object.keys(profile).map((key) => (
-            key !== 'role' && key !== 'department' ? (
+            key !== "role" && key !== "department" ? (
               <TextField
                 key={key}
                 label={key.charAt(0).toUpperCase() + key.slice(1)}
@@ -294,20 +308,28 @@ function Profile() {
           Department and Role
         </Typography>
         <div style={{ display: "flex", gap: "2rem" }}>
-          {/* Role Selection */}
           <FormControl style={{ flex: "1 1 45%" }}>
             <InputLabel>Role</InputLabel>
-            <Select name="role" value={profile.role} onChange={handleChange} disabled={!isEditing|isEditing}>
+            <Select
+              name="role"
+              value={profile.role}
+              onChange={handleChange}
+              disabled={!isEditing}
+            >
               {roles.map((role) => (
                 <MenuItem key={role} value={role}>{role}</MenuItem>
               ))}
             </Select>
           </FormControl>
 
-          {/* Department Selection */}
           <FormControl style={{ flex: "1 1 45%" }}>
             <InputLabel>Department</InputLabel>
-            <Select name="department" value={profile.department} onChange={handleChange} disabled={!isEditing|isEditing}>
+            <Select
+              name="department"
+              value={profile.department}
+              onChange={handleChange}
+              disabled={!isEditing}
+            >
               {departments.map((dept) => (
                 <MenuItem key={dept} value={dept}>{dept}</MenuItem>
               ))}
@@ -316,17 +338,41 @@ function Profile() {
         </div>
 
         {/* Action Buttons */}
-        {/* Conditional rendering based on editing state */}
         {isEditing ? (
           <>
-            <Button variant="contained" color="primary" onClick={handleUpdate} style={{ marginTop: '2rem' }}>Save</Button>
-            <Button variant="outlined" onClick={() => setIsEditing(false)} style={{ marginLeft: '1rem', marginTop: '2rem' }}>Cancel</Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleUpdate}
+              style={{ marginTop: "2rem" }}
+            >
+              Save
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => setIsEditing(false)}
+              style={{ marginLeft: "1rem", marginTop: "2rem" }}
+            >
+              Cancel
+            </Button>
           </>
         ) : (
           <>
-            <Button variant="outlined" onClick={() => setIsEditing(true)} style={{ marginTop: '2rem' }}>Edit</Button>
-            {/* Delete Profile Button */}
-            <Button variant="contained" onClick={handleDelete} style={{ marginLeft: '1rem', marginTop: '2rem', background: "red" }}>Delete Profile</Button>
+            <Button
+              variant="outlined"
+              onClick={() => setIsEditing(true)}
+              style={{ marginTop: "2rem" }}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleDelete}
+              style={{ marginLeft: "1rem", marginTop: "2rem" }}
+            >
+              Delete Profile
+            </Button>
           </>
         )}
       </div>

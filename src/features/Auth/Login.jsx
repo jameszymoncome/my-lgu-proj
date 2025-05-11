@@ -49,11 +49,11 @@ function Login() {
         }).then(() => {
           // Navigate based on user role after the alert is closed
           if (data.accessLevel === "ADMIN") {
-            navigate("/home");
+            navigate("/home-1");
           } else if (data.accessLevel === "DEPARTMENT HEAD") {
-            navigate("/home-encoder");
+            navigate("/home-1");
           } else if (data.accessLevel === "CUSTODIAN") {
-            navigate("/home-user");
+            navigate("/home-1");
           }
         });
       } else {

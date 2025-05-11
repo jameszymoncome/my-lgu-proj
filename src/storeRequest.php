@@ -36,10 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $data = json_decode(file_get_contents("php://input"), true);
 $items = $data['items'] ?? [];
 $purpose = $data['purpose'] ?? "";
-$userRoles = $data['userRoles'] ?? "";
 $userLogRole = $data['userLogRole'] ?? "";
 $userId = $data['userId'] ?? "";
-$requestNo = $data['requestNo'] ?? ""; // Request No. from the frontend
+$requestNo = $data['requestNo'] ?? "";
+$requestedBy = $data['requestedBy'] ?? "";
 
 if (empty($purpose)) {
     echo json_encode(["success" => false, "message" => "Purpose is required."]);
@@ -61,9 +61,9 @@ if ($row['total'] > 0) {
 
 // Insert the purchase request
 $status = ($userLogRole === "ADMIN") ? "Approved" : "Pending";
-$sql = "INSERT INTO purch_request (req_id, purpose, status, procces_by) VALUES (?, ?, ?, ?)";
+$sql = "INSERT INTO purch_request (req_id, purpose, status, requested_by, procces_by) VALUES (?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ssss", $requestNo, $purpose, $status, $userId);
+$stmt->bind_param("sssss", $requestNo, $purpose, $status, $requestedBy, $userId);
 
 if (!$stmt->execute()) {
     echo json_encode(["success" => false, "message" => "Error inserting purchase request: " . $stmt->error]);

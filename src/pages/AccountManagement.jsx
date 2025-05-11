@@ -38,6 +38,7 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { Notifications, NotificationsActive, NotificationsNone, NotificationsOff } from "@mui/icons-material";
 
 const drawerWidth = 240;
 
@@ -48,8 +49,7 @@ function AccountManagement() {
   const [selectedIndex, setSelectedIndex] = useState(0); // Track selected menu item
   const [isReportMenuOpen, setReportMenuOpen] = useState(false); // Track sub-menu visibility
   
-  const handleListItemClick = (index, path) => {
-    setSelectedIndex(index); // Update selected menu item
+  const handleListItemClick = (path) => {
     navigate(path); // Navigate to the selected route
   };
 
@@ -132,109 +132,101 @@ function AccountManagement() {
 
       {/* Sidebar Drawer */}
       <Drawer
-        variant="permanent"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            boxSizing: "border-box",
-            marginTop: "4rem",
-            backgroundColor: "#FFFF",
-            cursor: "pointer",
-          },
-        }}
-      >
-        <List>
-          <ListItem
-            button
-            onClick={() => handleListItemClick(0, "/home-1")}
-          >
-            <ListItemIcon>
-              <HomeIcon/>
-            </ListItemIcon>
-            <ListItemText primary="Home" />
-          </ListItem>
-          <ListItem
-            button
-            onClick={() => handleListItemClick(1, "/purchase-request")}
-          >
-            <ListItemIcon>
-              <AssignmentIcon/>
-            </ListItemIcon>
-            <ListItemText primary="Purchase Request" />
-          </ListItem>
-          <ListItem
-            button
-            onClick={() => handleListItemClick(2, "/inven-inspect")}
-          >
-            <ListItemIcon>
-              <ReportIcon/>
-            </ListItemIcon>
-            <ListItemText primary="Inspection" />
-          </ListItem>
-          {/* Main Report Button */}
-          <ListItem button onClick={toggleReportMenu}>
-            <ListItemIcon>
-              <ReportIcon/>
-            </ListItemIcon>
-            <ListItemText primary="Records" />
-            {isReportMenuOpen ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          {/* Sub-Buttons (collapsible) */}
-          <Collapse in={isReportMenuOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItem
-                button
-                style={{ paddingLeft: 32}}
-                onClick={() => handleListItemClick(5, "/par-ics")}
-              >
-                <ListItemIcon>
-                <AssignmentIcon/>
-              </ListItemIcon>
-                <ListItemText primary="PAR & ICS" />
-              </ListItem>
-              <ListItem
-                button
-                style={{ paddingLeft: 32}}
-                onClick={() => handleListItemClick(4, "/inventory")}
-              >
-              <ListItemIcon>
-                <AssignmentIcon/>
-              </ListItemIcon>
-                <ListItemText primary="Inventory" />
-              </ListItem>
-            </List>
-          </Collapse>
-          <ListItem
-            button
-            style={{ color: "#0F1D9F"}}
-            onClick={() => handleListItemClick(6, "/account-management")}
-          >
-            <ListItemIcon>
-              <PeopleIcon style={{ color: "#0F1D9F"}}/>
-            </ListItemIcon>
-            <ListItemText primary="Account Management" />
-          </ListItem>
-          <ListItem
-            button
-            onClick={() => handleListItemClick(6, "/profile")}
-          >
-            <ListItemIcon>
-              <AccountCircleIcon/>
-            </ListItemIcon>
-            <ListItemText primary="Profile" />
-          </ListItem>
-          <ListItem 
-            button
-            onClick={() => handleLogout(7, "/")}>
-            <ListItemIcon>
-              <LogoutIcon />
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItem>
-        </List>
-      </Drawer>
+              variant="permanent"
+              sx={{
+                width: drawerWidth,
+                flexShrink: 0,
+                "& .MuiDrawer-paper": {
+                  width: drawerWidth,
+                  boxSizing: "border-box",
+                  marginTop: "4rem",
+                  backgroundColor: "#FFFF",
+                  cursor: "pointer",
+                },
+              }}
+            >
+              <List>
+                <ListItem button onClick={() => handleListItemClick("/home-1")}>
+                  <ListItemIcon>
+                    <HomeIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Home" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/purchase-request")} >
+                  <ListItemIcon>
+                    <AssignmentIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Purchase Request" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/purchase-list")} >
+                  <ListItemIcon>
+                    <AssignmentIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary="Purchase List" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/inven-inspect")}  >
+                  <ListItemIcon>
+                    <ReportIcon/>
+                  </ListItemIcon>
+                  <ListItemText primary="Inspection" />
+                </ListItem>
+                <ListItem button onClick={toggleReportMenu}>
+                  <ListItemIcon>
+                    <ReportIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Records" />
+                  {isReportMenuOpen ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={isReportMenuOpen} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItem
+                      button
+                      style={{ paddingLeft: 32 }}
+                      onClick={() => handleListItemClick("/par-ics")}
+                    >
+                      <ListItemIcon>
+                                      <AssignmentIcon/>
+                                    </ListItemIcon>
+                      <ListItemText primary="PAR & ICS" />
+                    </ListItem>
+                    <ListItem
+                      button
+                      style={{ paddingLeft: 32 }}
+                      onClick={() => handleListItemClick("/inventory")}
+                    >
+                      <ListItemIcon>
+                                      <AssignmentIcon/>
+                                    </ListItemIcon>
+                      <ListItemText primary="Inventory" />
+                    </ListItem>
+                  </List>
+                </Collapse>
+                <ListItem button onClick={() => handleListItemClick("/account-management")} style={{ color: "#0F1D9F"}}>
+                  <ListItemIcon>
+                    <PeopleIcon style={{ color: "#0F1D9F"}}/>
+                  </ListItemIcon>
+                  <ListItemText primary="Account Management" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/notification")}>
+                  <ListItemIcon>
+                    <Notifications />
+                  </ListItemIcon>
+                  <ListItemText primary="Notification" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/profile")}>
+                  <ListItemIcon>
+                    <AccountCircleIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Profile" />
+                </ListItem>
+                <ListItem button onClick={handleLogout}>
+                  <ListItemIcon>
+                    <LogoutIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Logout" />
+                </ListItem>
+              </List>
+            </Drawer>
 
       {/* Main Content */}
       <div style={{ flexGrow: 1, padding: "80px 20px" }}>

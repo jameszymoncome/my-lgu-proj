@@ -27,6 +27,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import PeopleIcon from "@mui/icons-material/People";
 import Header from "../components/Header/Header.jsx";
 import { useNavigate } from "react-router-dom";
+import { Notifications, NotificationsActive, NotificationsNone, NotificationsOff } from "@mui/icons-material";
 
 const drawerWidth = 240;
 
@@ -44,12 +45,12 @@ function PurchaseRequest() {
   const [userLogRole, setUserLogRole] = useState("");
   const [userId, setUserId] = useState("");
   const [requestNo, setRequestNo] = useState("");
-
+  const [currentDate, setCurrentDate] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(null); // Track selected menu item
   const [isReportMenuOpen, setReportMenuOpen] = useState(false); // Track sub-menu visibility
+  const [requestedBy, setRequestedBy] = useState("");
 
-  const handleListItemClick = (index, path) => {
-      setSelectedIndex(index);
+  const handleListItemClick = (path) => {
       navigate(path);
     };
   
@@ -101,13 +102,13 @@ function PurchaseRequest() {
     if (userLog === "CUSTODIAN"){
       setDepartment(depart);
       setRequestedName({ full_name: fullName });
+      setRequestedBy(userIds);
     }
-    setUserRoles(userLog);
 
     const fetchReceivers = async () => {
       try {
         const response = await axios.get(
-          "http://ppemanagement.andrieinthesun.com/retrieve_users.php",
+          "http://localhost/myServer/retrieve_users.php",
           {
             params: {
               role: "DEPARTMENT HEAD,CUSTODIAN",
@@ -131,7 +132,7 @@ function PurchaseRequest() {
     const fetchRequestNo = async () => {
       try {
         const response = await axios.get(
-          "http://ppemanagement.andrieinthesun.com/getRequestNo.php"
+          "http://localhost/myServer/getRequestNo.php"
         );
         if (response.data.success) {
           setRequestNo(response.data.requestNo); // Set the Request No.
@@ -143,8 +144,13 @@ function PurchaseRequest() {
       }
     };
 
+    const today = new Date();
+    const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD
+    setCurrentDate(formattedDate);
+
     fetchRequestNo();
   }, []);
+
 
   const handleAddItem = () => {
     const newItem = {
@@ -176,337 +182,318 @@ function PurchaseRequest() {
   };
 
   const handleSubmitForApproval = async () => {
-  console.log("Submitting for approval...");
 
-  try {
-    const response = await axios.post("http://ppemanagement.andrieinthesun.com/storeRequest.php", {
-      items: items,
-      purpose: purpose,
-      userRoles: userRoles,
-      userLogRole: userLogRole,
-      userId: userId,
-      requestNo: requestNo, // Include the Request No.
-    });
-
-    if (response.data.success) {
-      Swal.fire({
-        icon: "success",
-        title: "Request submitted successfully!",
-        text: `Request No.: ${response.data.custom_id}`,
-        confirmButtonText: "OK",
+    try {
+      const response = await axios.post("http://localhost/myServer/storeRequest.php", {
+        items: items,
+        purpose: purpose,
+        userLogRole: userLogRole,
+        userId: userId,
+        requestNo: requestNo,
+        requestedBy: requestedBy,
       });
-    } else {
-      alert("Failed to submit the request: " + response.data.message);
+
+      if (response.data.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Request submitted successfully!",
+          text: `Request No.: ${response.data.custom_id}`,
+          confirmButtonText: "OK",
+        });
+      } else {
+        alert("Failed to submit the request: " + response.data.message);
+      }
+    } catch (error) {
+      console.error("Error submitting for approval:", error);
+      alert("Failed to submit for approval.");
     }
-  } catch (error) {
-    console.error("Error submitting for approval:", error);
-    alert("Failed to submit for approval.");
-  }
 };
 
   return (
     <div style={{display: "flex"}}>
       <Header />
     
-          {/* Drawer*/}
-                  <Drawer
-            variant="permanent"
-            sx={{
-              width: drawerWidth,
-              flexShrink: 0,
-              "& .MuiDrawer-paper": {
+      {/* Drawer*/}
+      <Drawer
+              variant="permanent"
+              sx={{
                 width: drawerWidth,
-                boxSizing: "border-box",
-                marginTop: "4rem",
-                backgroundColor: "#FFFF",
-                cursor: "pointer",
-              },
+                flexShrink: 0,
+                "& .MuiDrawer-paper": {
+                  width: drawerWidth,
+                  boxSizing: "border-box",
+                  marginTop: "4rem",
+                  backgroundColor: "#FFFF",
+                  cursor: "pointer",
+                },
+              }}
+            >
+              <List>
+                <ListItem button onClick={() => handleListItemClick("/home-1")}>
+                  <ListItemIcon>
+                    <HomeIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Home" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/purchase-request")} style={{ color: "#0F1D9F"}}>
+                  <ListItemIcon>
+                    <AssignmentIcon style={{ color: "#0F1D9F"}}/>
+                  </ListItemIcon>
+                  <ListItemText primary="Purchase Request" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/purchase-list")}>
+                  <ListItemIcon>
+                    <AssignmentIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Purchase List" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/inven-inspect")}>
+                  <ListItemIcon>
+                    <ReportIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Inspection" />
+                </ListItem>
+                <ListItem button onClick={toggleReportMenu}>
+                  <ListItemIcon>
+                    <ReportIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Records" />
+                  {isReportMenuOpen ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={isReportMenuOpen} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItem
+                      button
+                      style={{ paddingLeft: 32 }}
+                      onClick={() => handleListItemClick("/par-ics")}
+                    >
+                      <ListItemIcon>
+                                      <AssignmentIcon/>
+                                    </ListItemIcon>
+                      <ListItemText primary="PAR & ICS" />
+                    </ListItem>
+                    <ListItem
+                      button
+                      style={{ paddingLeft: 32 }}
+                      onClick={() => handleListItemClick("/inventory")}
+                    >
+                      <ListItemIcon>
+                                      <AssignmentIcon/>
+                                    </ListItemIcon>
+                      <ListItemText primary="Inventory" />
+                    </ListItem>
+                  </List>
+                </Collapse>
+                <ListItem button onClick={() => handleListItemClick("/account-management")}>
+                  <ListItemIcon>
+                    <PeopleIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Account Management" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/notification")}>
+                  <ListItemIcon>
+                    <Notifications />
+                  </ListItemIcon>
+                  <ListItemText primary="Notification" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/profile")}>
+                  <ListItemIcon>
+                    <AccountCircleIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Profile" />
+                </ListItem>
+                <ListItem button onClick={handleLogout}>
+                  <ListItemIcon>
+                    <LogoutIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Logout" />
+                </ListItem>
+              </List>
+            </Drawer>
+      <div style={{padding: "20px", marginTop: "3.5rem" }}>
+        <h1 style={{ color: "#0F1D9F" }}>Purchase Request</h1>
+        <p style={{ color: "#666" }}>Record of Property or Equipment Issued</p>
+
+        {/* Form Fields */}
+        <div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
+          <TextField
+            label="Date"
+            type="date"
+            value={currentDate}
+            InputLabelProps={{ shrink: true }}
+            fullWidth
+            disabled
+          />
+          <TextField
+            label="Request No."
+            value={requestNo}
+            fullWidth
+            disabled
+          />
+          <FormControl fullWidth>
+            <Autocomplete
+              options={receiverOptions} // List of names for the search
+              value={requestedName} // Current selected value
+              onChange={(event, newValue) => {
+                setRequestedName(newValue); // Update the state with the selected value
+                if (newValue) {
+                  setDepartment(newValue.department); // Update department with the selected user's department
+                  setUserRoles(newValue.role);
+                  setRequestedBy(newValue.user_id); // Update requestedBy with the selected user's full name
+                }
+              }}
+              filterOptions={(options, { inputValue }) =>
+                options.filter((option) =>
+                  option.full_name
+                    .toLowerCase()
+                    .includes(inputValue.toLowerCase())
+                )
+              }
+              getOptionLabel={(option) => option.full_name || ""}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Requested By"
+                  fullWidth
+                />
+              )}
+              disabled={userRoles === "CUSTODIAN"}
+            />
+          </FormControl>
+          <TextField
+            label="Department"
+            value={department}
+            fullWidth
+            disabled
+          />
+        </div>
+
+        {/* Items Table */}
+        <TableContainer component={Paper} style={{ marginBottom: "20px" }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Item No.</TableCell>
+                <TableCell>Quantity</TableCell>
+                <TableCell>Article/Description</TableCell>
+                <TableCell>Unit Price</TableCell>
+                <TableCell>Total</TableCell>
+                <TableCell>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {items.map((item, index) => (
+                <TableRow key={item.id}>
+                  <TableCell>{item.id}</TableCell>
+                  <TableCell>
+                    <TextField
+                      type="number"
+                      value={item.quantity}
+                      onChange={(e) =>
+                        handleInputChange(index, "quantity", parseInt(e.target.value))
+                      }
+                      fullWidth
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      value={item.description}
+                      onChange={(e) =>
+                        handleInputChange(index, "description", e.target.value)
+                      }
+                      fullWidth
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      type="number"
+                      value={item.unitPrice}
+                      onChange={(e) =>
+                        handleInputChange(index, "unitPrice", parseFloat(e.target.value))
+                      }
+                      fullWidth
+                    />
+                  </TableCell>
+                  <TableCell>{item.total.toLocaleString()}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() =>
+                        setItems(items.filter((_, i) => i !== index))
+                      }
+                    >
+                      Remove
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <Button
+          variant="contained"
+          style={{
+            backgroundColor: "#0F1D9F",
+            color: "white",
+            marginBottom: "20px",
+          }}
+          onClick={handleAddItem}
+        >
+          + Add More Item
+        </Button>
+
+        {/* Purpose Field */}
+        <TextField
+          label="Purpose"
+          multiline
+          rows={4}
+          value={purpose}
+          onChange={(e) => setPurpose(e.target.value)}
+          fullWidth
+          style={{ marginBottom: "20px" }}
+        />
+
+        {/* Total Amount */}
+        <h3 style={{ textAlign: "right", marginBottom: "20px" }}>
+          Total Amount:{" "}
+          {items.reduce((sum, item) => sum + item.total, 0).toLocaleString()}
+        </h3>
+
+        {/* Action Buttons */}
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+          <Button
+            variant="outlined"
+            style={{
+              borderColor: "#0F1D9F",
+              color: "#0F1D9F",
             }}
           >
-            <List>
-              <ListItem
-                button
-                onClick={() => handleListItemClick(0, "/home-1")}
-              >
-                <ListItemIcon>
-                  <HomeIcon  />
-                </ListItemIcon>
-                <ListItemText primary="Home" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleListItemClick(1, "/purchase-request")}
-                style={{color: "#0F1D9F"}}
-              >
-                <ListItemIcon>
-                  <AssignmentIcon style={{ color: "#0F1D9F" }}/>
-                </ListItemIcon>
-                <ListItemText primary="Purchase Request" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleListItemClick(1, "/inven-inspect")}
-                
-              >
-                <ListItemIcon>
-                  <ReportIcon  />
-                </ListItemIcon>
-                <ListItemText primary="Inspection" />
-              </ListItem>
-              <ListItem button onClick={toggleReportMenu}>
-                <ListItemIcon>
-                  <ReportIcon/>
-                </ListItemIcon>
-                <ListItemText primary="Records" />
-                {isReportMenuOpen ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-              <Collapse in={isReportMenuOpen} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                  <ListItem
-                    button
-                    style={{ paddingLeft: 32}}
-                    onClick={() => handleListItemClick(5, "/par-ics")}
-                  >
-                    <ListItemIcon>
-                    <AssignmentIcon/>
-                  </ListItemIcon>
-                    <ListItemText primary="PAR & ICS" />
-                  </ListItem>
-                  <ListItem
-                    button
-                    style={{ paddingLeft: 32}}
-                    onClick={() => handleListItemClick(4, "/inventory")}
-                  >
-                  <ListItemIcon>
-                    <AssignmentIcon/>
-                  </ListItemIcon>
-                    <ListItemText primary="Inventory" />
-                  </ListItem>
-                </List>
-              </Collapse>
-              <ListItem
-                button
-                style={{ color: selectedIndex === 7 ? "#0F1D9F" : "inherit" }}
-                onClick={() => handleListItemClick(7, "/account-management")}
-              >
-                <ListItemIcon>
-                  <PeopleIcon style={{ color: selectedIndex === 7 ? "#0F1D9F" : "inherit" }} />
-                </ListItemIcon>
-                <ListItemText primary="Account Management" />
-              </ListItem>
-              <ListItem
-                button
-                style={{ color: selectedIndex === 5 ? "#0F1D9F" : "inherit" }}
-                onClick={() => handleListItemClick(5, "/manage-tables")}
-              >
-                <ListItemIcon>
-                  <TableChartIcon style={{ color: selectedIndex === 5 ? "#0F1D9F" : "inherit" }} />
-                </ListItemIcon>
-                <ListItemText primary="Manage Tables" />
-              </ListItem>
-              <ListItem
-                button
-                style={{ color: selectedIndex === 6 ? "#0F1D9F" : "inherit" }}
-                onClick={() => handleListItemClick(6, "/profile")}
-              >
-                <ListItemIcon>
-                  <AccountCircleIcon style={{ color: selectedIndex === 6 ? "#0F1D9F" : "inherit" }} />
-                </ListItemIcon>
-                <ListItemText primary="Profile" />
-              </ListItem>
-              <ListItem
-                button
-                style={{ color: selectedIndex === 8 ? "#0F1D9F" : "inherit" }}
-                onClick={() => handleLogout(7, "/")}
-              >
-                <ListItemIcon>
-                  <LogoutIcon />
-                </ListItemIcon>
-                <ListItemText primary="Logout" />
-              </ListItem>
-            </List>
-          </Drawer>
-    <div style={{padding: "20px", marginTop: "3.5rem" }}>
-      <h1 style={{ color: "#0F1D9F" }}>Purchase Request</h1>
-      <p style={{ color: "#666" }}>Record of Property or Equipment Issued</p>
-
-      {/* Form Fields */}
-      <div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
-        <TextField
-          label="Date"
-          type="date"
-          InputLabelProps={{ shrink: true }}
-          fullWidth
-        />
-        <TextField
-          label="Request No."
-          value={requestNo}
-          fullWidth
-          disabled
-        />
-        <FormControl fullWidth>
-          <Autocomplete
-            options={receiverOptions} // List of names for the search
-            value={requestedName} // Current selected value
-            onChange={(event, newValue) => {
-              setRequestedName(newValue); // Update the state with the selected value
-              if (newValue) {
-                setDepartment(newValue.department); // Update department with the selected user's department
-                setUserRoles(newValue.role); // Update user roles with the selected user's role
-              }
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            style={{
+              backgroundColor: "#0F1D9F",
+              color: "white",
             }}
-            filterOptions={(options, { inputValue }) =>
-              options.filter((option) =>
-                option.full_name
-                  .toLowerCase()
-                  .includes(inputValue.toLowerCase())
-              )
-            }
-            getOptionLabel={(option) => option.full_name || ""}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Requested By"
-                fullWidth
-              />
-            )}
-            disabled={userRoles === "CUSTODIAN"}
-          />
-        </FormControl>
-        <TextField
-          label="Department"
-          value={department}
-          fullWidth
-          disabled
-        />
+            onClick={handleSaveDraft}
+          >
+            Save as Draft
+          </Button>
+          <Button
+            variant="contained"
+            style={{
+              backgroundColor: "#0F1D9F",
+              color: "white",
+            }}
+            onClick={handleSubmitForApproval}
+          >
+            Submit for Approval
+          </Button>
+        </div>
       </div>
-
-      {/* Items Table */}
-      <TableContainer component={Paper} style={{ marginBottom: "20px" }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Item No.</TableCell>
-              <TableCell>Quantity</TableCell>
-              <TableCell>Article/Description</TableCell>
-              <TableCell>Unit Price</TableCell>
-              <TableCell>Total</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {items.map((item, index) => (
-              <TableRow key={item.id}>
-                <TableCell>{item.id}</TableCell>
-                <TableCell>
-                  <TextField
-                    type="number"
-                    value={item.quantity}
-                    onChange={(e) =>
-                      handleInputChange(index, "quantity", parseInt(e.target.value))
-                    }
-                    fullWidth
-                  />
-                </TableCell>
-                <TableCell>
-                  <TextField
-                    value={item.description}
-                    onChange={(e) =>
-                      handleInputChange(index, "description", e.target.value)
-                    }
-                    fullWidth
-                  />
-                </TableCell>
-                <TableCell>
-                  <TextField
-                    type="number"
-                    value={item.unitPrice}
-                    onChange={(e) =>
-                      handleInputChange(index, "unitPrice", parseFloat(e.target.value) || 0)
-                    }
-                    fullWidth
-                  />
-                </TableCell>
-                <TableCell>{item.total.toLocaleString()}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() =>
-                      setItems(items.filter((_, i) => i !== index))
-                    }
-                  >
-                    Remove
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      <Button
-        variant="contained"
-        style={{
-          backgroundColor: "#0F1D9F",
-          color: "white",
-          marginBottom: "20px",
-        }}
-        onClick={handleAddItem}
-      >
-        + Add More Item
-      </Button>
-
-      {/* Purpose Field */}
-      <TextField
-        label="Purpose"
-        multiline
-        rows={4}
-        value={purpose}
-        onChange={(e) => setPurpose(e.target.value)}
-        fullWidth
-        style={{ marginBottom: "20px" }}
-      />
-
-      {/* Total Amount */}
-      <h3 style={{ textAlign: "right", marginBottom: "20px" }}>
-        Total Amount:{" "}
-        {items.reduce((sum, item) => sum + item.total, 0).toLocaleString()}
-      </h3>
-
-      {/* Action Buttons */}
-      <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-        <Button
-          variant="outlined"
-          style={{
-            borderColor: "#0F1D9F",
-            color: "#0F1D9F",
-          }}
-        >
-          Cancel
-        </Button>
-        <Button
-          variant="contained"
-          style={{
-            backgroundColor: "#0F1D9F",
-            color: "white",
-          }}
-          onClick={handleSaveDraft}
-        >
-          Save as Draft
-        </Button>
-        <Button
-          variant="contained"
-          style={{
-            backgroundColor: "#0F1D9F",
-            color: "white",
-          }}
-          onClick={handleSubmitForApproval}
-        >
-          Submit for Approval
-        </Button>
-      </div>
-    </div>
     </div>
   );
 }

@@ -29,6 +29,7 @@ import ApprovePR from "./pages/ApprovePR.jsx";
 import ListPR from "./pages/ListPR.jsx";
 import Home_1 from "./pages/Home_1.jsx";
 import Department from "./pages/Department.jsx";
+import PurchaseList from "./pages/PurchaseList.jsx";
 
 
 function App() {
@@ -69,6 +70,7 @@ function App() {
         <Route path="/list-pr" element={<ListPR />} />
         <Route path="/home-1" element={<Home_1 />} />
         <Route path="/department" element={<Department />} />
+        <Route path="/purchase-list" element={<PurchaseList />} />
       </Routes>
     </Router>
   );
