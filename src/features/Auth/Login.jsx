@@ -51,9 +51,9 @@ function Login() {
           if (data.accessLevel === "ADMIN") {
             navigate("/home-1");
           } else if (data.accessLevel === "DEPARTMENT HEAD") {
-            navigate("/home-1");
+            navigate("/dh-home-1");
           } else if (data.accessLevel === "CUSTODIAN") {
-            navigate("/home-1");
+            navigate("/ctn-home-1");
           }
         });
       } else {

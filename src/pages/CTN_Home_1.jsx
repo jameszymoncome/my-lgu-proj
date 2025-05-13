@@ -42,7 +42,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const drawerWidth = 240;
 
-const Home_1 = () => {
+const CTN_Home_1 = () => {
   const navigate = useNavigate();
   const [isReportMenuOpen, setReportMenuOpen] = useState(false);
 
@@ -178,29 +178,23 @@ const Home_1 = () => {
         }}
       >
         <List>
-          <ListItem button onClick={() => handleListItemClick("/home-1")} style={{ color: "#0F1D9F"}}>
+          <ListItem button onClick={() => handleListItemClick("/ctn-home-1")} style={{ color: "#0F1D9F"}}>
             <ListItemIcon>
               <HomeIcon style={{ color: "#0F1D9F"}}/>
             </ListItemIcon>
             <ListItemText primary="Home" />
           </ListItem>
-          <ListItem button onClick={() => handleListItemClick("/purchase-request")}>
+          <ListItem button onClick={() => handleListItemClick("/ctn-purchase-request")}>
             <ListItemIcon>
               <AssignmentIcon />
             </ListItemIcon>
             <ListItemText primary="Purchase Request" />
           </ListItem>
-          <ListItem button onClick={() => handleListItemClick("/purchase-list")}>
+          <ListItem button onClick={() => handleListItemClick("/ctn-purchase-list")}>
             <ListItemIcon>
               <AssignmentIcon />
             </ListItemIcon>
             <ListItemText primary="Purchase List" />
-          </ListItem>
-          <ListItem button onClick={() => handleListItemClick("/inspection")}>
-            <ListItemIcon>
-              <ReportIcon />
-            </ListItemIcon>
-            <ListItemText primary="Inspection" />
           </ListItem>
           <ListItem button onClick={toggleReportMenu}>
             <ListItemIcon>
@@ -214,7 +208,7 @@ const Home_1 = () => {
               <ListItem
                 button
                 style={{ paddingLeft: 32 }}
-                onClick={() => handleListItemClick("/par-ics")}
+                onClick={() => handleListItemClick("/ctn-parics1")}
               >
                 <ListItemIcon>
                                 <AssignmentIcon/>
@@ -224,7 +218,7 @@ const Home_1 = () => {
               <ListItem
                 button
                 style={{ paddingLeft: 32 }}
-                onClick={() => handleListItemClick("/inventory")}
+                onClick={() => handleListItemClick("/ctn-inventory")}
               >
                 <ListItemIcon>
                                 <AssignmentIcon/>
@@ -233,19 +227,13 @@ const Home_1 = () => {
               </ListItem>
             </List>
           </Collapse>
-          <ListItem button onClick={() => handleListItemClick("/account-management")}>
-            <ListItemIcon>
-              <PeopleIcon />
-            </ListItemIcon>
-            <ListItemText primary="Account Management" />
-          </ListItem>
-          <ListItem button onClick={() => handleListItemClick("/notification")}>
+          <ListItem button onClick={() => handleListItemClick("/ctn-notification")}>
             <ListItemIcon>
               <Notifications />
             </ListItemIcon>
             <ListItemText primary="Notification" />
           </ListItem>
-          <ListItem button onClick={() => handleListItemClick("/profile")}>
+          <ListItem button onClick={() => handleListItemClick("/ctn-profile")}>
             <ListItemIcon>
               <AccountCircleIcon />
             </ListItemIcon>
@@ -387,4 +375,4 @@ const Home_1 = () => {
   );
 };
 
-export default Home_1;
+export default CTN_Home_1;

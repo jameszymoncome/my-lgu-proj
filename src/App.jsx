@@ -32,6 +32,24 @@ import Department from "./pages/Department.jsx";
 import PurchaseList from "./pages/PurchaseList.jsx";
 import PurchaseListView from "./pages/PurchaseListView.jsx";
 import Inspection from "./pages/Inspection.jsx";
+import DH_Home_1 from "./pages/DH_Home_1.jsx";
+import DH_PurchaseRequest from "./pages/DeptHeadPages/DH_PurchaseRequest.jsx";
+import DH_PurchaseList from "./pages/DeptHeadPages/DH_PurchaseList.jsx";
+import DH_PurchaseListView from "./pages/DeptHeadPages/DH_PurchaseListView.jsx";
+import DH_PAR_ICS1 from "./pages/DeptHeadPages/DH_PAR_ICS1.jsx";
+import DH_InventoryReport from "./pages/DeptHeadPages/DH_InventoryReport.jsx";
+import DH_Inspection from "./pages/DeptHeadPages/DH_Inspection.jsx";
+import DH_Notification from "./pages/DeptHeadPages/DH_Notification.jsx";
+import DH_Profile from "./pages/DeptHeadPages/DH_Profile.jsx";
+import CTN_Home_1 from "./pages/CTN_Home_1.jsx";
+import CTN_PurchaseRequest from "./pages/CTN_PurchaseRequest.jsx";
+import CTN_PurchaseList from "./pages/CTN_PurchaseList.jsx";
+import CTN_PurchaseListView from "./pages/CTN_PurchaseListView.jsx";
+import CTN_PAR_ICS1 from "./pages/CTN_PAR_ICS1.jsx";
+import CTN_InventoryReport from "./pages/CTN_InventoryReport.jsx";
+import CTN_Notification from "./pages/CTN_Notification.jsx";
+import CTN_Profile from "./pages/CTN_Profile.jsx";
+
 
 
 function App() {
@@ -75,6 +93,23 @@ function App() {
         <Route path="/purchase-list" element={<PurchaseList />} />
         <Route path="/purchase-list-view/:requestId" element={<PurchaseListView />} />
         <Route path="/inspection" element={<Inspection />} />
+        <Route path="/dh-home-1" element={<DH_Home_1 />} />
+        <Route path="/dh-purchase-request" element={<DH_PurchaseRequest />} />
+        <Route path="/dh-purchase-list" element={<DH_PurchaseList />} />
+        <Route path="/dh-purchase-list-view/:requestId" element={<DH_PurchaseListView />} />
+        <Route path="/dh-parics1" element={<DH_PAR_ICS1 />} />
+        <Route path="/dh-inventory" element={<DH_InventoryReport />} />
+        <Route path="/dh-notification" element={<DH_Notification />} />
+        <Route path="/dh-profile" element={<DH_Profile />} />
+        <Route path="/dh-inspection" element={<DH_Inspection />} />
+        <Route path="/ctn-home-1" element={<CTN_Home_1 />} />
+        <Route path="/ctn-purchase-request" element={<CTN_PurchaseRequest />} />
+        <Route path="/ctn-purchase-list" element={<CTN_PurchaseList />} />
+        <Route path="/ctn-purchase-list-view/:requestId" element={<CTN_PurchaseListView />} />
+        <Route path="/ctn-parics1" element={<CTN_PAR_ICS1 />} />
+        <Route path="/ctn-inventory" element={<CTN_InventoryReport />} />
+        <Route path="/ctn-notification" element={<CTN_Notification />} />
+        <Route path="/ctn-profile" element={<CTN_Profile />} />
       </Routes>
     </Router>
   );
