@@ -196,7 +196,7 @@ const Home_1 = () => {
             </ListItemIcon>
             <ListItemText primary="Purchase List" />
           </ListItem>
-          <ListItem button onClick={() => handleListItemClick("/inven-inspect")}>
+          <ListItem button onClick={() => handleListItemClick("/inspection")}>
             <ListItemIcon>
               <ReportIcon />
             </ListItemIcon>

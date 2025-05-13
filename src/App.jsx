@@ -30,6 +30,8 @@ import ListPR from "./pages/ListPR.jsx";
 import Home_1 from "./pages/Home_1.jsx";
 import Department from "./pages/Department.jsx";
 import PurchaseList from "./pages/PurchaseList.jsx";
+import PurchaseListView from "./pages/PurchaseListView.jsx";
+import Inspection from "./pages/Inspection.jsx";
 
 
 function App() {
@@ -71,6 +73,8 @@ function App() {
         <Route path="/home-1" element={<Home_1 />} />
         <Route path="/department" element={<Department />} />
         <Route path="/purchase-list" element={<PurchaseList />} />
+        <Route path="/purchase-list-view/:requestId" element={<PurchaseListView />} />
+        <Route path="/inspection" element={<Inspection />} />
       </Routes>
     </Router>
   );

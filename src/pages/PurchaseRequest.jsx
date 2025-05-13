@@ -108,7 +108,7 @@ function PurchaseRequest() {
     const fetchReceivers = async () => {
       try {
         const response = await axios.get(
-          "http://localhost/myServer/retrieve_users.php",
+          "http://ppemanagement.andrieinthesun.com/retrieve_users.php",
           {
             params: {
               role: "DEPARTMENT HEAD,CUSTODIAN",
@@ -132,7 +132,7 @@ function PurchaseRequest() {
     const fetchRequestNo = async () => {
       try {
         const response = await axios.get(
-          "http://localhost/myServer/getRequestNo.php"
+          "http://ppemanagement.andrieinthesun.com/getRequestNo.php"
         );
         if (response.data.success) {
           setRequestNo(response.data.requestNo); // Set the Request No.
@@ -177,14 +177,36 @@ function PurchaseRequest() {
     setItems(updatedItems);
   };
 
-  const handleSaveDraft = () => {
-    alert("Saved as Draft!");
+  const handleSaveDraft = async () => {
+    try {
+      const response = await axios.post("http://ppemanagement.andrieinthesun.com/storeRequestDraft.php", {
+        items: items,
+        purpose: purpose,
+        userLogRole: userLogRole,
+        userId: userId,
+        requestNo: requestNo,
+        requestedBy: requestedBy,
+      });
+
+      if (response.data.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Request submitted successfully!",
+          text: `Request No.: ${response.data.custom_id}`,
+          confirmButtonText: "OK",
+        });
+      } else {
+        alert("Failed to submit the request: " + response.data.message);
+      }
+    } catch (error) {
+      console.error("Error submitting for approval:", error);
+      alert("Failed to submit for approval.");
+    }
   };
 
   const handleSubmitForApproval = async () => {
-
     try {
-      const response = await axios.post("http://localhost/myServer/storeRequest.php", {
+      const response = await axios.post("http://ppemanagement.andrieinthesun.com/storeRequest.php", {
         items: items,
         purpose: purpose,
         userLogRole: userLogRole,
@@ -229,7 +251,7 @@ function PurchaseRequest() {
               }}
             >
               <List>
-                <ListItem button onClick={() => handleListItemClick("/home-1")}>
+                <ListItem button onClick={() => handleListItemClick("/home")}>
                   <ListItemIcon>
                     <HomeIcon />
                   </ListItemIcon>
@@ -241,13 +263,13 @@ function PurchaseRequest() {
                   </ListItemIcon>
                   <ListItemText primary="Purchase Request" />
                 </ListItem>
-                <ListItem button onClick={() => handleListItemClick("/purchase-list")}>
+                <ListItem button onClick={() => handleListItemClick("/purchase-list")} >
                   <ListItemIcon>
                     <AssignmentIcon />
                   </ListItemIcon>
                   <ListItemText primary="Purchase List" />
                 </ListItem>
-                <ListItem button onClick={() => handleListItemClick("/inven-inspect")}>
+                <ListItem button onClick={() => handleListItemClick("/inspection")}>
                   <ListItemIcon>
                     <ReportIcon />
                   </ListItemIcon>
@@ -268,8 +290,8 @@ function PurchaseRequest() {
                       onClick={() => handleListItemClick("/par-ics")}
                     >
                       <ListItemIcon>
-                                      <AssignmentIcon/>
-                                    </ListItemIcon>
+                        <AssignmentIcon/>
+                      </ListItemIcon>
                       <ListItemText primary="PAR & ICS" />
                     </ListItem>
                     <ListItem
@@ -395,6 +417,7 @@ function PurchaseRequest() {
                       fullWidth
                     />
                   </TableCell>
+
                   <TableCell>
                     <TextField
                       value={item.description}
@@ -404,6 +427,7 @@ function PurchaseRequest() {
                       fullWidth
                     />
                   </TableCell>
+
                   <TableCell>
                     <TextField
                       type="number"
@@ -414,7 +438,9 @@ function PurchaseRequest() {
                       fullWidth
                     />
                   </TableCell>
+
                   <TableCell>{item.total.toLocaleString()}</TableCell>
+                  
                   <TableCell>
                     <Button
                       variant="contained"

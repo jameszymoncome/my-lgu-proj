@@ -71,40 +71,37 @@ const Inspection_Scanner = () => {
   }, []);
 
   const fetchData = async () => {
-    try {
-      const response = await axios.get(`http://localhost:5000/item-check`);
+  try {
+    const response = await axios.get(
+      `http://ppemanagement.andrieinthesun.com/inspection_scanner.php?action=item-check`
+    );
 
-      if (response.data.success) {
-        Swal.fire({
-          title: "Backup Confirmation",
-          text: "Do you want to continue with the backup data?",
-          icon: "question",
-          showCancelButton: true,
-          confirmButtonText: "Yes, Continue",
-          cancelButtonText: "No, Cancel",
-          confirmButtonColor: "#0F1D9F",
-          cancelButtonColor: "#d33",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // If the user confirms, store the data in itemGet
-            setItemGet((prevItems) => [...prevItems, ...response.data.data]);
-            console.log("Fetched data stored in itemGet:", response.data.data);
-          } else {
-            console.log("User canceled the backup.");
-          }
-        });
-
-        // setItemGet((prevItems) => [...prevItems, ...response.data.data]);
-        // return console.log("Fetched data:", response.data.data);
-
-
-      } else {
-        
-      }
-    } catch (error) {
-      console.error("Error fetching scanned details:", error);
+    if (response.data.success) {
+      Swal.fire({
+        title: "Backup Confirmation",
+        text: "Do you want to continue with the backup data?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Yes, Continue",
+        cancelButtonText: "No, Cancel",
+        confirmButtonColor: "#0F1D9F",
+        cancelButtonColor: "#d33",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          setItemGet((prevItems) => [...prevItems, ...response.data.data]);
+          console.log("Fetched data stored in itemGet:", response.data.data);
+        } else {
+          console.log("User canceled the backup.");
+        }
+      });
+    } else {
+      Swal.fire("Error", response.data.message, "error");
     }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    Swal.fire("Error", "Failed to fetch data. Please try again later.", "error");
   }
+};
 
   const startScanner = () => {
     console.log("Scanner started"); // Log when the scanner starts
@@ -138,41 +135,41 @@ const Inspection_Scanner = () => {
     setQrScanned(true);
   };
 
-  const scannedDetial = async (id, stattts) => {
-    try {
-      const response = await axios.get(`http://localhost:5000/item-scanned/${id}`);
-      if (response.data && response.data.data) {
-        setFormId(response.data.data.form_id || "");
-        setItemDescription(response.data.data.description || "");
+  const scannedDetial = async (id, status) => {
+  try {
+    const response = await axios.get(
+      `http://ppemanagement.andrieinthesun.com/inspection_scanner.php?action=item-scanned&id=${id}`
+    );
 
-        setItemGet((prevItems) => {
-          // Check if the item already exists in the array
-          const isDuplicate = prevItems.some((item) => item.itemIds === response.data.data.itemIds);
-        
-          if (!isDuplicate) {
-            // If not a duplicate, add the new item
-            // console.log("New item added:", response.data.data);
-            return [...prevItems, { ...response.data.data, status: stattts }];
-          } else {
-            // console.log("Duplicate item detected:", response.data.data);
-            return prevItems.map((item) =>
-              item.itemIds === response.data.data.itemIds
-                ? { ...item, status: stattts }
-                : item
-            );
-          }
-        });
-        savetoBackup(response.data.data.itemIds, stattts);
+    if (response.data && response.data.data) {
+      setFormId(response.data.data.form_id || "");
+      setItemDescription(response.data.data.description || "");
 
-      } else {
-        console.error("Invalid response format:", response.data);
-        alert(response.data.message);
-      }
-    } catch (error) {
-      console.error("Error fetching scanned details:", error);
-      alert("Failed to fetch scanned details. Please try again.");
+      setItemGet((prevItems) => {
+        const isDuplicate = prevItems.some(
+          (item) => item.itemIds === response.data.data.itemIds
+        );
+
+        if (!isDuplicate) {
+          return [...prevItems, { ...response.data.data, status }];
+        } else {
+          return prevItems.map((item) =>
+            item.itemIds === response.data.data.itemIds
+              ? { ...item, status }
+              : item
+          );
+        }
+      });
+
+      savetoBackup(response.data.data.itemIds, status);
+    } else {
+      Swal.fire("Error", response.data.message || "Invalid response format.", "error");
     }
-  };
+  } catch (error) {
+    console.error("Error fetching scanned details:", error);
+    Swal.fire("Error", "Failed to fetch scanned details. Please try again.", "error");
+  }
+};
 
   const getCurrentDateTime = () => {
     const now = new Date();
@@ -186,24 +183,33 @@ const Inspection_Scanner = () => {
     return { date, time };
   };
   
-  const savetoBackup = async (ids, staat) => {
+  const savetoBackup = async (ids, status) => {
+  const { date, time } = getCurrentDateTime();
 
-    const { date, time } = getCurrentDateTime();
-    try {
-      const response = await axios.get(`http://localhost:5000/ppe-entries-backup/${ids}/${date}/${time}/${staat}`);
-      if(response.data.success) {
-        console.log("Data saved to backup successfully:", response.data.data);
+  try {
+    const response = await axios.post(
+      `http://ppemanagement.andrieinthesun.com/inspection_scanner.php`,
+      {
+        action: "save-backup",
+        item_id: ids,
+        date: date,
+        time: time,
+        status: status,
       }
-      else {  
-        console.error("Failed to save data to backup:", response.data.message);
-        alert("Failed to save data to backup. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error saving to backup:", error);
-      alert("Failed to save to backup. Please try again.");
+    );
+
+    if (response.data.success) {
+      console.log("Data saved to backup successfully:", response.data.message);
+      Swal.fire("Success", "Data saved to backup successfully.", "success");
+    } else {
+      console.error("Failed to save data to backup:", response.data.message);
+      Swal.fire("Error", response.data.message, "error");
     }
-    console.log("Saving to backup.", date, time);
+  } catch (error) {
+    console.error("Error saving to backup:", error);
+    Swal.fire("Error", "Failed to save data to backup. Please try again.", "error");
   }
+};
 
   const data = [
     { Description: "MAYOR'S OFFICE", PropertyInventory: "2024-12-01", PARICS: "Completed", ExItem: "2", ItemSca: "2", ItemRem: "2", stats: "Good" },
@@ -307,34 +313,49 @@ const Inspection_Scanner = () => {
     return acc;
   }, {});
 
-  const handleDelete = (item) => {
-    setGetItems((prevItems) => {
-      const updatedItems = prevItems.filter((i) => i.itemIds !== item.itemIds);
-  
-      const remainingItems = updatedItems.filter(
-        (i) =>
-          i.description === item.description &&
-          i.form_id === item.form_id &&
-          i.quantity === item.quantity
-      );
-  
-      if (remainingItems.length === 0) {
-        setItemGet((prevItemGet) =>
-          prevItemGet.filter(
-            (i) =>
-              i.description !== item.description ||
-              i.form_id !== item.form_id ||
-              i.quantity !== item.quantity
-          )
+  const handleDelete = async (item) => {
+  try {
+    const response = await axios.delete(
+      `http://ppemanagement.andrieinthesun.com/inspection_scanner.php?action=delete-item&id=${item.itemIds}`
+    );
+
+    if (response.data.success) {
+      setGetItems((prevItems) => {
+        const updatedItems = prevItems.filter((i) => i.itemIds !== item.itemIds);
+
+        const remainingItems = updatedItems.filter(
+          (i) =>
+            i.description === item.description &&
+            i.form_id === item.form_id &&
+            i.quantity === item.quantity
         );
 
-        closeOverlay();
-      }
-  
-      console.log("Updated isGetItems:", updatedItems); // Debugging
-      return updatedItems;
-    });
-  };
+        if (remainingItems.length === 0) {
+          setItemGet((prevItemGet) =>
+            prevItemGet.filter(
+              (i) =>
+                i.description !== item.description ||
+                i.form_id !== item.form_id ||
+                i.quantity !== item.quantity
+            )
+          );
+
+          closeOverlay();
+        }
+
+        console.log("Updated isGetItems:", updatedItems); // Debugging
+        return updatedItems;
+      });
+
+      Swal.fire("Success", "Item deleted successfully.", "success");
+    } else {
+      Swal.fire("Error", response.data.message, "error");
+    }
+  } catch (error) {
+    console.error("Error deleting item:", error);
+    Swal.fire("Error", "Failed to delete item. Please try again.", "error");
+  }
+};
 
   const groupedArray = Object.values(groupedItems);
 
@@ -462,7 +483,7 @@ const Inspection_Scanner = () => {
           </ListItem>
           <ListItem
             button
-            onClick={() => handleListItemClick(1, "/inven-inspect")}
+            onClick={() => handleListItemClick(1, "/inspection")}
             style={{color: "#0F1D9F"}}
           >
             <ListItemIcon>

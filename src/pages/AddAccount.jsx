@@ -152,7 +152,7 @@ function AddAccount() {
           </ListItem>
           <ListItem
             button
-            onClick={() => handleListItemClick(2, "/inven-inspect")}
+            onClick={() => handleListItemClick(2, "/inspection")}
           >
             <ListItemIcon>
               <ReportIcon/>
