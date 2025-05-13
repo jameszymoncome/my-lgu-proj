@@ -42,13 +42,13 @@ import DH_Inspection from "./pages/DeptHeadPages/DH_Inspection.jsx";
 import DH_Notification from "./pages/DeptHeadPages/DH_Notification.jsx";
 import DH_Profile from "./pages/DeptHeadPages/DH_Profile.jsx";
 import CTN_Home_1 from "./pages/CTN_Home_1.jsx";
-import CTN_PurchaseRequest from "./pages/CTN_PurchaseRequest.jsx";
-import CTN_PurchaseList from "./pages/CTN_PurchaseList.jsx";
-import CTN_PurchaseListView from "./pages/CTN_PurchaseListView.jsx";
-import CTN_PAR_ICS1 from "./pages/CTN_PAR_ICS1.jsx";
-import CTN_InventoryReport from "./pages/CTN_InventoryReport.jsx";
-import CTN_Notification from "./pages/CTN_Notification.jsx";
-import CTN_Profile from "./pages/CTN_Profile.jsx";
+import CTN_PurchaseRequest from "./pages/CustodianPages/CTN_PurchaseRequest.jsx";
+import CTN_PurchaseList from "./pages/CustodianPages/CTN_PurchaseList.jsx";
+import CTN_PurchaseListView from "./pages/CustodianPages/CTN_PurchaseListView.jsx";
+import CTN_PAR_ICS1 from "./pages/CustodianPages/CTN_PAR_ICS1.jsx";
+import CTN_InventoryReport from "./pages/CustodianPages/CTN_InventoryReport.jsx";
+import CTN_Notification from "./pages/CustodianPages/CTN_Notification.jsx";
+import CTN_Profile from "./pages/CustodianPages/CTN_Profile.jsx";
 
 
 
