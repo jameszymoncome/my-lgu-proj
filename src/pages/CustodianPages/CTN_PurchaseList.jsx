@@ -97,7 +97,7 @@ const CTN_PurchaseList = () => {
     navigate("/ppe-entry")
   }
   const handleViewRequest = (reqId) => {
-    navigate(`/purchase-list-view/${reqId}`);
+    navigate(`/ctn-purchase-list-view/${reqId}`);
   };
 
   const handleUpdateRequest = async (reqId, status) => {

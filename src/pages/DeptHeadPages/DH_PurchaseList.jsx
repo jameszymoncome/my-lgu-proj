@@ -97,7 +97,7 @@ const DH_PurchaseList = () => {
     navigate("/ppe-entry")
   }
   const handleViewRequest = (reqId) => {
-    navigate(`/purchase-list-view/${reqId}`);
+    navigate(`/dh-purchase-list-view/${reqId}`);
   };
 
   const handleUpdateRequest = async (reqId, status) => {

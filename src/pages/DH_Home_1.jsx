@@ -257,14 +257,7 @@ const DH_Home_1 = () => {
       <div className="main-content">
             <header className="home-header">
                 <div className="header-content">
-                    <h1>
-                        {userRole === "ADMIN"
-                            ? "Welcome Admin, to the Inventory Management System"
-                            : userRole === "DEPARTMENT HEAD"
-                            ? "Welcome Department Head, to the Inventory Management System"
-                            : userRole === "CUSTODIAN"
-                            ? "Welcome Custodian, to the Inventory Management System"
-                            : "Welcome to the Inventory Management System"}
+                    <h1> Welcome Department Head, to the Inventory Management System
                     </h1>
                 </div>
                 <hr className="header-divider" />

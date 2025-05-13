@@ -142,7 +142,7 @@ const PurchaseList = () => {
                       }}
                     >
                       <List>
-                        <ListItem button onClick={() => handleListItemClick("/home")}>
+                        <ListItem button onClick={() => handleListItemClick("/home-1")}>
                           <ListItemIcon>
                             <HomeIcon />
                           </ListItemIcon>

@@ -41,6 +41,7 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { Notifications, NotificationsActive, NotificationsNone, NotificationsOff } from "@mui/icons-material";
 
 const drawerWidth = 240;
 
@@ -88,8 +89,7 @@ function PAR_ICS1() {
     navigate("/par-ics2", { state: { itemId: id } });
   };
   
-  const handleListItemClick = (index, path) => {
-    setSelectedIndex(index);
+  const handleListItemClick = (path) => {
     navigate(path);
   };
 
@@ -147,81 +147,101 @@ function PAR_ICS1() {
     <div style={{ display: "flex" }}>
       <Header />
       <Drawer
-        variant="permanent"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            boxSizing: "border-box",
-            marginTop: "4rem",
-            backgroundColor: "#FFFF",
-            cursor: "pointer",
-          },
-        }}
-      >
-        <List>
-          <ListItem button onClick={() => handleListItemClick(0, "/home-1")}>
-            <ListItemIcon><HomeIcon /></ListItemIcon>
-            <ListItemText primary="Home" />
-          </ListItem>
-          <ListItem button onClick={() => handleListItemClick(1, "/purchase-request")}>
-            <ListItemIcon><AssignmentIcon /></ListItemIcon>
-            <ListItemText primary="Purchase Request" />
-          </ListItem>
-          <ListItem button onClick={() => handleListItemClick(2, "/inspection")}>
-            <ListItemIcon><ReportIcon /></ListItemIcon>
-            <ListItemText primary="Inspection" />
-          </ListItem>
-          {/* Main Report Button */}
-          <ListItem button onClick={toggleReportMenu}>
-            <ListItemIcon><ReportIcon /></ListItemIcon>
-            <ListItemText primary="Records" />
-            {isReportMenuOpen ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          {/* Sub-Buttons (collapsible) */}
-          <Collapse in={isReportMenuOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItem
-                button
-                style={{ paddingLeft: 32, color: "#0F1D9F"}}
-                onClick={() => handleListItemClick(5, "/par-ics")}
-              >
-                <ListItemIcon style={{ color:"#0F1D9F"}} >
-                <AssignmentIcon/>
-              </ListItemIcon>
-                <ListItemText primary="PAR & ICS" />
-              </ListItem>
-              <ListItem
-                button
-                style={{ paddingLeft: 32}}
-                onClick={() => handleListItemClick(4, "/inventory")}
-              >
-              <ListItemIcon >
-                <AssignmentIcon/>
-              </ListItemIcon>
-                <ListItemText primary="Inventory" />
-              </ListItem>
-            </List>
-          </Collapse>
-          {/* Additional List Items */}
-          {/* Example for Account Management */}
-          <ListItem button onClick={() => handleListItemClick(4, "/account-management")} style={{ color: selectedIndex === 4 ? "#0F1D9F" : "inherit" }}>
-            <ListItemIcon><PeopleIcon/></ListItemIcon>
-            <ListItemText primary="Account Management" />
-          </ListItem>
-          {/* Manage Tables and Profile */}
-          <ListItem button onClick={() => handleListItemClick(6, "/profile")}>
-            <ListItemIcon><AccountCircleIcon /></ListItemIcon>
-            <ListItemText primary="Profile" />
-          </ListItem>
-          {/* Logout Button */}
-          <ListItem button onClick={() => handleLogout(7, "/")}>
-            <ListItemIcon><LogoutIcon /></ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItem>
-        </List>
-      </Drawer>
+                    variant="permanent"
+                    sx={{
+                      width: drawerWidth,
+                      flexShrink: 0,
+                      "& .MuiDrawer-paper": {
+                        width: drawerWidth,
+                        boxSizing: "border-box",
+                        marginTop: "4rem",
+                        backgroundColor: "#FFFF",
+                        cursor: "pointer",
+                      },
+                    }}
+                  >
+                    <List>
+                      <ListItem button onClick={() => handleListItemClick("/home-1")} >
+                        <ListItemIcon>
+                          <HomeIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Home" />
+                      </ListItem>
+                      <ListItem button onClick={() => handleListItemClick("/purchase-request")}>
+                        <ListItemIcon>
+                          <AssignmentIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Purchase Request" />
+                      </ListItem>
+                      <ListItem button onClick={() => handleListItemClick("/purchase-list")}>
+                        <ListItemIcon>
+                          <AssignmentIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Purchase List" />
+                      </ListItem>
+                      <ListItem button onClick={() => handleListItemClick("/inspection")} >
+                        <ListItemIcon>
+                          <ReportIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Inspection" />
+                      </ListItem>
+                      <ListItem button onClick={toggleReportMenu}>
+                        <ListItemIcon>
+                          <ReportIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Records" />
+                        {isReportMenuOpen ? <ExpandLess /> : <ExpandMore />}
+                      </ListItem>
+                      <Collapse in={isReportMenuOpen} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding>
+                          <ListItem
+                            button
+                            style={{ paddingLeft: 32, color: "#0F1D9F" }}
+                            onClick={() => handleListItemClick("/par-ics")}
+                          >
+                            <ListItemIcon>
+                                            <AssignmentIcon style={{ color: "#0F1D9F"}}/>
+                                          </ListItemIcon>
+                            <ListItemText primary="PAR & ICS" />
+                          </ListItem>
+                          <ListItem
+                            button
+                            style={{ paddingLeft: 32 }}
+                            onClick={() => handleListItemClick("/inventory")}
+                          >
+                            <ListItemIcon>
+                                            <AssignmentIcon/>
+                                          </ListItemIcon>
+                            <ListItemText primary="Inventory" />
+                          </ListItem>
+                        </List>
+                      </Collapse>
+                      <ListItem button onClick={() => handleListItemClick("/account-management")}>
+                        <ListItemIcon>
+                          <PeopleIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Account Management" />
+                      </ListItem>
+                      <ListItem button onClick={() => handleListItemClick("/notification")}>
+                        <ListItemIcon>
+                          <Notifications />
+                        </ListItemIcon>
+                        <ListItemText primary="Notification" />
+                      </ListItem>
+                      <ListItem button onClick={() => handleListItemClick("/profile")}>
+                        <ListItemIcon>
+                          <AccountCircleIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Profile" />
+                      </ListItem>
+                      <ListItem button onClick={handleLogout}>
+                        <ListItemIcon>
+                          <LogoutIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Logout" />
+                      </ListItem>
+                    </List>
+                  </Drawer>
 
       {/* Main Content */}
       <div style={{

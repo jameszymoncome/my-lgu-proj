@@ -367,7 +367,7 @@ function CTN_PurchaseRequest() {
                   fullWidth
                 />
               )}
-              disabled={userRoles === "CUSTODIAN"}
+              disabled
             />
           </FormControl>
           <TextField
