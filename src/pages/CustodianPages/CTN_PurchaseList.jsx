@@ -31,51 +31,52 @@ const CTN_PurchaseList = () => {
     const [purchaseDataList, setPurchaseDataList] = useState([])
 
     useEffect(() => {
+      const userId = localStorage.getItem("userId"); // or whatever key you use for user id
+      if (!userId) return;
       const fetchPurchaseData = async () => {
         try {
-          const response = await axios.get("http://ppemanagement.andrieinthesun.com/retrieve_purchase_request.php");
-          setPurchaseDataList(response.data.data);
-          console.log(response.data.data);
+          const response = await axios.get(`http://ppemanagement.andrieinthesun.com/ctn_retrieve_purchase_request.php?user_id=${userId}`);
+          setPurchaseDataList(Array.isArray(response.data.data) ? response.data.data : []);
         } catch (error) {
-            console.error("Error fetching purchase data:", error);
-            alert("Failed to fetch purchase data.");
+          setPurchaseDataList([]); // fallback to empty array on error
+          console.error("Error fetching purchase data:", error);
+          alert("Failed to fetch purchase data.");
         }
       };
 
       fetchPurchaseData();
-    }, [])
+    }, []);
 
     const handleListItemClick = (path) => {
       navigate(path);
     };
 
-    const handleLogout = (index, path) => {
-        setSelectedIndex(index); // Update the selected menu item
-        Swal.fire({
-          icon: "question",
-          title: "Are you sure?",
-          text: "Do you really want to log out?",
-          showCancelButton: true, // Show the "No" button
-          confirmButtonText: "Yes, Logout",
-          cancelButtonText: "No, Stay",
-          background: "#f9f9f9", // Light background
-          color: "#333", // Dark text color for contrast
-          confirmButtonColor: "#d33", // Red color for "Yes" button
-          cancelButtonColor: "#0F1D9F", // Blue color for "No" button
-          customClass: {
-            popup: "minimal-popup", // Add a custom class for further styling
-          },
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // Perform logout logic
-            localStorage.clear(); // Clear user data
-            navigate(path); // Redirect to login page
-          } else {
-            // Optional: Handle "No" button click (if needed)
-            console.log("User chose to stay logged in.");
-          }
-        });
-    };
+    const handleLogout = () => {
+            Swal.fire({
+              icon: "question",
+              title: "Are you sure?",
+              text: "Do you really want to log out?",
+              showCancelButton: true, // Show the "No" button
+              confirmButtonText: "Yes, Logout",
+              cancelButtonText: "No, Stay",
+              background: "#f9f9f9", // Light background
+              color: "#333", // Dark text color for contrast
+              confirmButtonColor: "#d33", // Red color for "Yes" button
+              cancelButtonColor: "#0F1D9F", // Blue color for "No" button
+              customClass: {
+                popup: "minimal-popup", // Add a custom class for further styling
+              },
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // Perform logout logic
+                localStorage.clear(); // Clear user data
+                navigate('/'); // Redirect to login page
+              } else {
+                // Optional: Handle "No" button click (if needed)
+                console.log("User chose to stay logged in.");
+              }
+            });
+        };
 
     const toggleReportMenu = () => {
         setReportMenuOpen((prev) => !prev);

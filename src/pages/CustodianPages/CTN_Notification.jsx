@@ -87,9 +87,31 @@ const CTN_Notification = () => {
   });
 
   const handleLogout = () => {
-    localStorage.clear();
-    navigate("/");
-  };
+          Swal.fire({
+            icon: "question",
+            title: "Are you sure?",
+            text: "Do you really want to log out?",
+            showCancelButton: true, // Show the "No" button
+            confirmButtonText: "Yes, Logout",
+            cancelButtonText: "No, Stay",
+            background: "#f9f9f9", // Light background
+            color: "#333", // Dark text color for contrast
+            confirmButtonColor: "#d33", // Red color for "Yes" button
+            cancelButtonColor: "#0F1D9F", // Blue color for "No" button
+            customClass: {
+              popup: "minimal-popup", // Add a custom class for further styling
+            },
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Perform logout logic
+              localStorage.clear(); // Clear user data
+              navigate('/'); // Redirect to login page
+            } else {
+              // Optional: Handle "No" button click (if needed)
+              console.log("User chose to stay logged in.");
+            }
+          });
+      };
 
   const toggleReportMenu = () => {
     setReportMenuOpen((prev) => !prev);

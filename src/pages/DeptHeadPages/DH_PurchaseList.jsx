@@ -28,29 +28,30 @@ const DH_PurchaseList = () => {
 
     const [selectedIndex, setSelectedIndex] = useState(null); // Track selected menu item
     const [isReportMenuOpen, setReportMenuOpen] = useState(false); // Track sub-menu visibility
-    const [purchaseDataList, setPurchaseDataList] = useState([])
+    const [purchaseDataList, setPurchaseDataList] = useState([]);
 
     useEffect(() => {
+      const userId = localStorage.getItem("userId"); // or whatever key you use for user id
+      if (!userId) return;
       const fetchPurchaseData = async () => {
         try {
-          const response = await axios.get("http://ppemanagement.andrieinthesun.com/retrieve_purchase_request.php");
-          setPurchaseDataList(response.data.data);
-          console.log(response.data.data);
+          const response = await axios.get(`http://ppemanagement.andrieinthesun.com/dh_retrieve_purchase_request.php?user_id=${userId}`);
+          setPurchaseDataList(Array.isArray(response.data.data) ? response.data.data : []);
         } catch (error) {
-            console.error("Error fetching purchase data:", error);
-            alert("Failed to fetch purchase data.");
+          setPurchaseDataList([]); // fallback to empty array on error
+          console.error("Error fetching purchase data:", error);
+          alert("Failed to fetch purchase data.");
         }
       };
 
       fetchPurchaseData();
-    }, [])
+    }, []);
 
     const handleListItemClick = (path) => {
       navigate(path);
     };
 
-    const handleLogout = (index, path) => {
-        setSelectedIndex(index); // Update the selected menu item
+    const handleLogout = () => {
         Swal.fire({
           icon: "question",
           title: "Are you sure?",
@@ -69,7 +70,7 @@ const DH_PurchaseList = () => {
           if (result.isConfirmed) {
             // Perform logout logic
             localStorage.clear(); // Clear user data
-            navigate(path); // Redirect to login page
+            navigate('/'); // Redirect to login page
           } else {
             // Optional: Handle "No" button click (if needed)
             console.log("User chose to stay logged in.");
@@ -101,8 +102,9 @@ const DH_PurchaseList = () => {
   };
 
   const handleUpdateRequest = async (reqId, status) => {
+    const userId = localStorage.getItem("userId"); // or wherever you store it
     try{
-      const response = await axios.post("http://ppemanagement.andrieinthesun.com/requestStatus.php", {
+      const response = await axios.post(`http://ppemanagement.andrieinthesun.com/dh_retrieve_purchase_request.php?user_id=${userId}`, {
         reqId: reqId,
         status: status,
       });
@@ -246,8 +248,9 @@ const DH_PurchaseList = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                  {purchaseDataList.map((row, index) => (
-                    <TableRow key={index}>
+                  {(purchaseDataList && purchaseDataList.length > 0) ? (
+                    purchaseDataList.map((row, index) => (
+                      <TableRow key={index}>
                       <TableCell sx={{ fontSize: "1rem", borderBottom: "1px solid #000", textAlign: "center" }}>{row.req_id}</TableCell>
                       <TableCell sx={{ fontSize: "1rem", borderBottom: "1px solid #000", textAlign: "center" }}>{row.date}</TableCell>
                       <TableCell sx={{ fontSize: "1rem", borderBottom: "1px solid #000", textAlign: "center" }}>{row.requestedBy}</TableCell>
@@ -270,7 +273,14 @@ const DH_PurchaseList = () => {
                         )}
                       </TableCell>
                     </TableRow>
-                  ))}
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={7} align="center">
+                        No purchase requests found.
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
                 </Table>
             </TableContainer>
