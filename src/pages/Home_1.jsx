@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Home_1.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faCamera, faClipboard } from "@fortawesome/free-solid-svg-icons";
@@ -36,6 +36,7 @@ import {
   Legend,
 } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
+import { set } from "date-fns";
 
 // Register required elements
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -53,6 +54,37 @@ const Home_1 = () => {
   const handleListItemClick = (path) => {
     navigate(path);
   };
+
+  const [firstName, setFirstName] = useState("");
+  const [userRole, setUserRole] = useState("");
+  
+    useEffect(() => {
+      const storedFirstName = localStorage.getItem("firstName");
+      const storeduserRole = localStorage.getItem("userRole");
+      if (storedFirstName) {
+          setFirstName(storedFirstName);
+          setUserRole(storeduserRole);
+      } else {
+          navigate("/login"); // Redirect to login if no first name is found
+      }
+  }, [navigate]);
+
+
+  const [NoOfFixedAssets, setNoOfFixedAssets] = useState();
+  const [NoOfDepartments, setNoOfDepartments] = useState();
+  const [PendingPurchaseRequests, setPendingPurchaseRequests] = useState();
+  useEffect(() => {
+  fetch("http://ppemanagement.andrieinthesun.com/home_details.php")
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        setNoOfFixedAssets(data.total_fixed_assets);
+        setNoOfDepartments(data.total_department);
+        setPendingPurchaseRequests(data.pending_requests);
+        // Use data.total_fixed_assets, data.total_department, data.pending_requests
+      }
+    });
+}, []);
 
   const handleLogout = () => {
     Swal.fire({
@@ -72,8 +104,7 @@ const Home_1 = () => {
     });
   };
 
-  // Example user role (can be dynamically set based on authentication)
-    const userRole = "ADMIN"; // Change to "dept head" or "custodian" as needed
+
 
     // Data for the Doughnut chart
     const userData = {
@@ -107,11 +138,12 @@ const Home_1 = () => {
     const stats =
         userRole === "ADMIN"
             ? [
-                  { title: "No. of Fixed Assets", value: "1,000" },
-                  { title: "Departments/Offices", value: "45" },
+                  { title: "No. of Fixed Assets", value: NoOfFixedAssets },
+                  { title: "Departments/Offices", value: NoOfDepartments },
                   { title: "Fixed Assets for Maintenance/Repair", value: "47" },
-                  { title: "Pending Purchase Requests", value: "5" },
+                  { title: "Pending Purchase Requests", value: PendingPurchaseRequests },
                   { title: "Inspection Month", value: "JUNE 2025" },
+                  { title: "Last Inspection Date", value: "May 2025" },
               ]
             : userRole === "DEPARTMENT HEAD"
             ? [
@@ -239,6 +271,12 @@ const Home_1 = () => {
             </ListItemIcon>
             <ListItemText primary="Account Management" />
           </ListItem>
+          <ListItem button onClick={() => handleListItemClick("/department")} >
+                      <ListItemIcon>
+                        <TableChartIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Department" />
+                    </ListItem>
           <ListItem button onClick={() => handleListItemClick("/notification")}>
             <ListItemIcon>
               <Notifications />
@@ -280,7 +318,7 @@ const Home_1 = () => {
             <div className="dashboard-layout">
                 {/* User Card */}
                 <div className="stat-card user-card">
-                    <h3 className="user-title">{userCardTitle}</h3>
+                    <h3 className="user-title">{firstName}</h3>
                     <div className="donut-chart-container">
                         <Doughnut data={userData} options={options} />
                     </div>

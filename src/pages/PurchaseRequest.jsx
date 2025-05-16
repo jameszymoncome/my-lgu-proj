@@ -54,8 +54,7 @@ function PurchaseRequest() {
       navigate(path);
     };
   
-    const handleLogout = (index, path) => {
-      setSelectedIndex(index); // Update the selected menu item
+    const handleLogout = () => {
       Swal.fire({
         icon: "question",
         title: "Are you sure?",
@@ -74,7 +73,7 @@ function PurchaseRequest() {
         if (result.isConfirmed) {
           // Perform logout logic
           localStorage.clear(); // Clear user data
-          navigate(path); // Redirect to login page
+          navigate('/'); // Redirect to login page
         } else {
           // Optional: Handle "No" button click (if needed)
           console.log("User chose to stay logged in.");
@@ -251,7 +250,7 @@ function PurchaseRequest() {
               }}
             >
               <List>
-                <ListItem button onClick={() => handleListItemClick("/home")}>
+                <ListItem button onClick={() => handleListItemClick("/home-1")}>
                   <ListItemIcon>
                     <HomeIcon />
                   </ListItemIcon>
@@ -312,6 +311,12 @@ function PurchaseRequest() {
                   </ListItemIcon>
                   <ListItemText primary="Account Management" />
                 </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/department")}>
+                            <ListItemIcon>
+                              <TableChartIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary="Department" />
+                          </ListItem>
                 <ListItem button onClick={() => handleListItemClick("/notification")}>
                   <ListItemIcon>
                     <Notifications />

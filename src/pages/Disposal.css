@@ -1,0 +1,299 @@
+.main-content {
+  display: flex;
+  flex-direction: column;
+  padding: 80px 20px; /* Add padding to the main content */
+}
+
+.view-reports-button{
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95em;
+    padding: 15px;
+    width: auto;
+    height: auto;
+    line-height: 1.2;
+    box-sizing: border-box;
+    align-self: flex-start; /* Prevents stretching in flex containers */
+    min-width: unset;
+    max-width: 100%;
+}
+
+.disposal-item-container{
+    margin: 10px 30px 10px 30px;
+}
+
+.search-filter-container {
+    display: flex; /* Arrange elements horizontally */
+    gap: 10px; /* Add space between elements */
+    align-items: center; /* Align items vertically */
+    justify-content: space-between; /* Distribute space evenly */
+    margin-bottom: 20px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+}
+
+.search-bar {
+    flex: 1; /* Make the search bar take up available space */
+    padding: 8px 12px; /* Add padding inside the input */
+    border: 1px solid #ccc; /* Add a border */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 13px; /* Adjust font size */
+    outline: none; /* Remove default outline */
+    transition: border-color 0.3s ease; /* Smooth transition for focus */
+    font-family: 'Poppins', sans-serif; /* Font family */
+    font-weight: 500; /* Font weight */
+}
+
+.header-content {
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Pushes children to left and right */
+    align-items: center; 
+}
+
+.search-bar:focus {
+    border-color: #bbb; /* Highlight border on focus */
+    box-shadow: 0 0 4px #bbb; /* Add shadow on focus */
+}
+
+.filter-dropdown-department {
+    padding: 8px 12px; /* Add padding inside the dropdown */
+    border: 1px solid #ccc; /* Add a border */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 14px; /* Adjust font size */
+    outline: none; /* Remove default outline */
+    transition: border-color 0.3s ease; /* Smooth transition for focus */
+    background-color: #fff; /* White background */
+    cursor: pointer; /* Pointer cursor for dropdown */
+    background-color: #0F1D9F; /* White background */
+    width:20%;
+}
+
+.filter-dropdown-status {
+    padding: 8px 12px; /* Add padding inside the dropdown */
+    border: 1px solid #ccc; /* Add a border */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 14px; /* Adjust font size */
+    outline: none; /* Remove default outline */
+    transition: border-color 0.3s ease; /* Smooth transition for focus */
+    background-color: #fff; /* White background */
+    cursor: pointer; /* Pointer cursor for dropdown */
+    background-color: #0F1D9F; /* White background */
+    width: 10%;
+}
+
+.filter-dropdown-department,
+.filter-dropdown-status:focus {
+    border-color: #bbb; /* Highlight border on focus */
+    box-shadow: 0 0 4px #bbb; /* Add shadow on focus */
+}
+
+.disposal-item-header {
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Distribute items with space between */
+    align-items: center; /* Align items vertically in the center */
+    padding: 10px 0; /* Add some padding for spacing */
+}
+
+.disposal-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
+    text-align: left;
+}
+
+.disposal-table th, .disposal-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.disposal-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.disposal-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.disposal-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.action-button {
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Vertically center the content */
+    justify-content: center; /* Horizontally center the content */
+    gap: 8px; /* Add a gap between the icon and the text */
+    padding: 10px 15px; /* Add padding */
+    border: none; /* Remove default border */
+    background-color: #ff0000; /* Purple background */
+    color: white; /* White text */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 14px; /* Adjust font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+    width: 20%; /* Make the button occupy the full width of the cell */
+    box-sizing: border-box; /* Include padding in width calculation */
+    height: 40px; /* Match the height of the dropdown */
+    font-family: 'Poppins', sans-serif; /* Font family */
+    font-weight: 600; /* Font weight */
+}
+
+.action-button:hover {
+    background-color: #aaa; /* Darker gray on hover */
+    color: #000; /* Black text */
+}
+
+/* Dropdown Container */
+select {
+    appearance: none; /* Remove default browser styling */
+    -webkit-appearance: none; /* For Safari */
+    -moz-appearance: none; /* For Firefox */
+    background-color: #0F1D9F; /* Blue background */
+    color: #fff; /* Black text */
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    text-transform: capitalize;
+    width: 100%; /* Full width of the cell */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    font-family: 'Poppins', sans-serif; /* Font family */
+}
+
+/* Dropdown Arrow */
+select::after {
+    content: '▼'; /* Add a custom arrow */
+    position: absolute;
+    right: 10px;
+    pointer-events: none;
+}
+
+/* Hover Effect */
+select:hover {
+    background-color: #fff; /* Yellow on hover */
+    color: #000; /* Black text */
+}
+
+/* Focus Effect */
+select:focus {
+    outline: none;
+    box-shadow: 0 0 5px #ddd; /* Gray glow */
+}
+
+/* Dropdown options */
+option {
+    background-color: #ddd; /* White background for options */
+    color: #000; /* Black text */
+    padding: 10px;
+    text-transform: capitalize;
+}
+
+/* Base styles for disposal status */
+.disposal-status {
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block;
+    text-align: center;
+}
+
+/* Red for Pending */
+.disposal-status.pending {
+    color: #ff4d4d; /* Red text */
+}
+
+/* Green for Completed */
+.disposal-status.completed {
+    color: #4caf50; /* Green text */
+}
+
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Modal Content */
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 400px;
+}
+
+/* Modal Content */
+.modal-content h2 {
+    font-weight: 600; /* Font weight */
+    font-size: 20px; /* Font size */
+    color:#000; /* White text */
+}
+
+/* Modal Actions */
+.modal-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 30px; /* Space between buttons */
+    justify-content: center; /* Center the buttons */
+}
+
+/* Confirm Button */
+.confirm-button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 40px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif; /* Font family */
+    font-weight: 600; /* Font weight */
+}
+
+/* Cancel Button */
+.cancel-button {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 40px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif; /* Font family */
+    font-weight: 600; /* Font weight */
+}
+
+/* Confirm Button Hover */
+.confirm-button:hover {
+    background-color: #45a049;
+}
+
+/* Cancel Button Hover */
+.cancel-button:hover {
+    background-color: #e53935;
+}
+
+/* Modal Content List */
+.modal-content ul {
+    list-style-type: none; /* Remove bullets */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+}
+
+.modal-content li {
+    margin-bottom: 5px; /* Optional: Add spacing between list items */
+}

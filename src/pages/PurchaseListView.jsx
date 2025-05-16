@@ -42,11 +42,10 @@ import "./Purchase_list.css";
 import { format } from 'date-fns';
 import { Notifications, NotificationsActive, NotificationsNone, NotificationsOff } from "@mui/icons-material";
 
-
 const drawerWidth = 240;
 
 function PurchaseListView() {
-    const { requestId  } = useParams(); // Destructuring to get the req_id
+  const { requestId  } = useParams(); // Destructuring to get the req_id
 
   const [items, setItems] = useState([]);
 
@@ -174,6 +173,7 @@ function PurchaseListView() {
     console.log(items);
     try {
       const response = await axios.post("http://ppemanagement.andrieinthesun.com/checkingItem.php", {
+        requestId: requestId,
         formData: formData,
         items: items,
       });
@@ -273,6 +273,12 @@ function PurchaseListView() {
                   </ListItemIcon>
                   <ListItemText primary="Account Management" />
                 </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/department")}>
+                                            <ListItemIcon>
+                                              <TableChartIcon/>
+                                            </ListItemIcon>
+                                            <ListItemText primary="Department" />
+                                          </ListItem>
                 <ListItem button onClick={() => handleListItemClick("/notification")}>
                   <ListItemIcon>
                     <Notifications />

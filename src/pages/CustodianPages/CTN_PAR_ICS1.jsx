@@ -41,6 +41,8 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { Notifications, NotificationsActive, NotificationsNone, NotificationsOff } from "@mui/icons-material";
+
 
 const drawerWidth = 240;
 
@@ -76,24 +78,25 @@ function CTN_PAR_ICS1() {
   }, [])
 
   const getData = async () => {
+    const userId = localStorage.getItem("userId"); // or whatever key you use for user id
+    if (!userId) return;
     try {
-      const response = await axios.get("http://localhost:5000/items");
-      setItems(response.data); // Update state with fetched data
+      const response = await axios.get(`http://ppemanagement.andrieinthesun.com/ctn_getParIcs.php?user_id=${userId}`);
+      setItems(response.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   }
 
   const handleButtonClick = (id) => {
-    navigate("/par-ics2", { state: { itemId: id } });
+    navigate(`/ctn-par-ics2/${id}`);
   };
   
   const handleListItemClick = (path) => {
     navigate(path);
   };
 
-  const handleLogout = (index, path) => {
-    setSelectedIndex(index); // Update the selected menu item
+  const handleLogout = () => {
     Swal.fire({
       icon: "question",
       title: "Are you sure?",
@@ -112,7 +115,7 @@ function CTN_PAR_ICS1() {
       if (result.isConfirmed) {
         // Perform logout logic
         localStorage.clear(); // Clear user data
-        navigate(path); // Redirect to login page
+        navigate('/'); // Redirect to login page
       } else {
         // Optional: Handle "No" button click (if needed)
         console.log("User chose to stay logged in.");
@@ -141,6 +144,42 @@ function CTN_PAR_ICS1() {
   const toggleCalendar = () => setCalendarVisible((prev) => !prev);
   
   const closeCalendar = () => setCalendarVisible(false);
+
+  // Filtering logic
+const filteredItems = Array.isArray(items) ? items.filter((row) => {
+  const form_id = (row.form_id || "").toString();
+  const requestedby = (row.requestedby || "").toString();
+  const department = (row.department || "").toString();
+
+  // Search filter
+  const matchesSearch =
+    form_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    requestedby.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    department.toLowerCase().includes(searchTerm.toLowerCase());
+
+  // Form dropdown filter
+  let matchesForm = true;
+  if (selectedOption1 === "optionA") {
+    matchesForm = form_id[0]?.toLowerCase() === "p";
+  } else if (selectedOption1 === "optionB") {
+    matchesForm = form_id[0]?.toLowerCase() === "i";
+  }
+
+  // Department dropdown filter
+  let matchesDept = true;
+  if (selectedOption2) {
+    const deptMap = {
+      optionC: "General Service Office (GSO)",
+      optionD: "MPDO",
+      optionE: "MAYOR'S OFFICE",
+      optionF: "ENGINEERING",
+      optionG: "ACCOUNTING",
+    };
+    matchesDept = department === deptMap[selectedOption2];
+  }
+
+  return matchesSearch && matchesForm && matchesDept;
+}) : [];
 
   return (
     <div style={{ display: "flex" }}>
@@ -337,7 +376,7 @@ function CTN_PAR_ICS1() {
             {/* Table Head */}
             <TableHead>
               <TableRow>
-                {["Type", "Form ID", "Entity Name", "Fund Cluster", "Date", "Action"].map((header) =>
+                {["Type", "Form ID", "Requested by", "Department", "Date", "Action"].map((header) =>
                   (<StyledTableDataCell key={header} isHeader>{header}</StyledTableDataCell>)
                 )}
               </TableRow>
@@ -345,34 +384,42 @@ function CTN_PAR_ICS1() {
 
             {/* Table Body with Sample Data */}
             <TableBody>
-              {items.map((row) => (
-                <TableRow key={row.item_id}>
-                <StyledTableDataCell>{(row.form_id[0]) === 'i' ? 'ICS' : 'PAR'}</StyledTableDataCell>
-                <StyledTableDataCell>{row.form_id}</StyledTableDataCell>
-                <StyledTableDataCell>{row.entityName}</StyledTableDataCell>
-                <StyledTableDataCell>{row.fundCluster}</StyledTableDataCell>
-                <StyledTableDataCell>{row.date}</StyledTableDataCell>
-
-                  <StyledTableDataCell>
-                    <button
-                      style={{
-                        backgroundColor:"#0F1D9F", 
-                        color:"white", 
-                        border:"none", 
-                        padding:"8px 16px", 
-                        borderRadius:"4px", 
-                        cursor:"pointer", 
-                        fontSize:"14px"
-                      }}
-                      onClick={() => handleButtonClick(row.form_id)}
-                    >
-                      View
-                    </button>
-                  </StyledTableDataCell>
-
+              {filteredItems.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} align="center">
+                    No records found.
+                  </TableCell>
                 </TableRow>
-              ))}
-            </TableBody> 
+              ) : (
+                filteredItems.map((row) => (
+                  <TableRow key={row.form_id}>
+                    <StyledTableDataCell>
+                      {row.form_id[0]?.toLowerCase() === 'i' ? 'ICS' : 'PAR'}
+                    </StyledTableDataCell>
+                    <StyledTableDataCell>{row.form_id}</StyledTableDataCell>
+                    <StyledTableDataCell>{row.requestedby}</StyledTableDataCell>
+                    <StyledTableDataCell>{row.department}</StyledTableDataCell>
+                    <StyledTableDataCell>{row.date}</StyledTableDataCell>
+                    <StyledTableDataCell>
+                      <button
+                        style={{
+                          backgroundColor: "#0F1D9F",
+                          color: "white",
+                          border: "none",
+                          padding: "8px 16px",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                          fontSize: "14px"
+                        }}
+                        onClick={() => handleButtonClick(row.form_id)}
+                      >
+                        View
+                      </button>
+                    </StyledTableDataCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
            </Table> 
          </StyledTableContainer> 
        </div> 

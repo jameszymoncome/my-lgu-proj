@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect} from "react";
-import "./PAR_ICS2.css";
+import "../PAR_ICS2.css";
 import {
   Drawer,
   List,
@@ -20,7 +20,7 @@ import {
   FormControl,
   Collapse,
 } from "@mui/material";
-import Header from "../components/Header/Header.jsx";
+import Header from "../../components/Header/Header.jsx";
 import HomeIcon from "@mui/icons-material/Home";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import ReportIcon from "@mui/icons-material/Report";
@@ -120,7 +120,7 @@ const StyledTableContainer = styled(TableContainer)({
 
 
 
-function PAR_ICS2() {
+function CTN_PAR_ICS2() {
   const { ids  } = useParams();
 
   const navigate = useNavigate();
@@ -645,29 +645,23 @@ function PAR_ICS2() {
                     }}
                   >
                     <List>
-                      <ListItem button onClick={() => handleListItemClick("/home-1")} >
+                      <ListItem button onClick={() => handleListItemClick("/ctn-home-1")} >
                         <ListItemIcon>
                           <HomeIcon />
                         </ListItemIcon>
                         <ListItemText primary="Home" />
                       </ListItem>
-                      <ListItem button onClick={() => handleListItemClick("/purchase-request")}>
+                      <ListItem button onClick={() => handleListItemClick("/ctn-purchase-request")} >
                         <ListItemIcon>
                           <AssignmentIcon />
                         </ListItemIcon>
                         <ListItemText primary="Purchase Request" />
                       </ListItem>
-                      <ListItem button onClick={() => handleListItemClick("/purchase-list")}>
+                      <ListItem button onClick={() => handleListItemClick("/ctn-purchase-list")} >
                         <ListItemIcon>
                           <AssignmentIcon />
                         </ListItemIcon>
                         <ListItemText primary="Purchase List" />
-                      </ListItem>
-                      <ListItem button onClick={() => handleListItemClick("/inspection")} >
-                        <ListItemIcon>
-                          <ReportIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Inspection" />
                       </ListItem>
                       <ListItem button onClick={toggleReportMenu}>
                         <ListItemIcon>
@@ -681,7 +675,8 @@ function PAR_ICS2() {
                           <ListItem
                             button
                             style={{ paddingLeft: 32, color: "#0F1D9F" }}
-                            onClick={() => handleListItemClick("/par-ics")}
+                            onClick={() => handleListItemClick("/ctn-parics1")}
+                            
                           >
                             <ListItemIcon>
                                             <AssignmentIcon style={{ color: "#0F1D9F"}}/>
@@ -691,7 +686,7 @@ function PAR_ICS2() {
                           <ListItem
                             button
                             style={{ paddingLeft: 32 }}
-                            onClick={() => handleListItemClick("/inventory")}
+                            onClick={() => handleListItemClick("/ctn-inventory")}
                           >
                             <ListItemIcon>
                                             <AssignmentIcon/>
@@ -700,25 +695,13 @@ function PAR_ICS2() {
                           </ListItem>
                         </List>
                       </Collapse>
-                      <ListItem button onClick={() => handleListItemClick("/account-management")}>
-                        <ListItemIcon>
-                          <PeopleIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Account Management" />
-                      </ListItem>
-                      <ListItem button onClick={() => handleListItemClick("/department")}>
-                                                  <ListItemIcon>
-                                                    <TableChartIcon/>
-                                                  </ListItemIcon>
-                                                  <ListItemText primary="Department" />
-                                                </ListItem>
-                      <ListItem button onClick={() => handleListItemClick("/notification")}>
+                      <ListItem button onClick={() => handleListItemClick("/ctn-notification")}>
                         <ListItemIcon>
                           <Notifications />
                         </ListItemIcon>
                         <ListItemText primary="Notification" />
                       </ListItem>
-                      <ListItem button onClick={() => handleListItemClick("/profile")}>
+                      <ListItem button onClick={() => handleListItemClick("/ctn-profile")}>
                         <ListItemIcon>
                           <AccountCircleIcon />
                         </ListItemIcon>
@@ -829,4 +812,4 @@ function PAR_ICS2() {
 }
 
 
-export default PAR_ICS2;
+export default CTN_PAR_ICS2;

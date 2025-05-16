@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Home_1.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faCamera, faClipboard } from "@fortawesome/free-solid-svg-icons";
@@ -54,6 +54,20 @@ const DH_Home_1 = () => {
     navigate(path);
   };
 
+  const [firstName, setFirstName] = useState("");
+  const [userRole, setUserRole] = useState("");
+  
+    useEffect(() => {
+      const storedFirstName = localStorage.getItem("firstName");
+      const storeduserRole = localStorage.getItem("userRole");
+      if (storedFirstName) {
+          setFirstName(storedFirstName);
+          setUserRole(storeduserRole);
+      } else {
+          navigate("/login"); // Redirect to login if no first name is found
+      }
+  }, [navigate]);
+
   const handleLogout = () => {
     Swal.fire({
       icon: "question",
@@ -72,8 +86,29 @@ const DH_Home_1 = () => {
     });
   };
 
-  // Example user role (can be dynamically set based on authentication)
-    const userRole = "ADMIN"; // Change to "dept head" or "custodian" as needed
+    const [dashboardStats, setDashboardStats] = useState({
+    department: "",
+    total_fixed_assets: 0,
+    pending_requests: 0,
+  });
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId"); // or whatever key you use for user id
+    if (!userId) return;
+
+    fetch(`http://ppemanagement.andrieinthesun.com/dh_home_details.php?user_id=${userId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setDashboardStats({
+            department: data.department,
+            total_fixed_assets: data.total_fixed_assets,
+            pending_requests: data.pending_requests,
+          });
+        }
+      });
+  }, []);
+
 
     // Data for the Doughnut chart
     const userData = {
@@ -115,10 +150,11 @@ const DH_Home_1 = () => {
               ]
             : userRole === "DEPARTMENT HEAD"
             ? [
-                  { title: "No. of Fixed Assets", value: "300" },
+                  { title: "No. of Fixed Assets", value: dashboardStats.total_fixed_assets },
                   { title: "Fixed Assets for Maintenance/Repair", value: "10" },
+                  { title: "Department", value: dashboardStats.department },
                   { title: "Inspection Month", value: "JUNE 2025" },
-                  { title: "Pending Purchase Requests", value: "5" },
+                  { title: "Pending Purchase Requests", value: dashboardStats.pending_requests },
                   { title: "Last Inspection Date", value: "May 2025" },
               ]
             : userRole === "CUSTODIAN"
@@ -267,7 +303,7 @@ const DH_Home_1 = () => {
             <div className="dashboard-layout">
                 {/* User Card */}
                 <div className="stat-card user-card">
-                    <h3 className="user-title">{userCardTitle}</h3>
+                    <h3 className="user-title">{firstName}</h3>
                     <div className="donut-chart-container">
                         <Doughnut data={userData} options={options} />
                     </div>

@@ -308,7 +308,7 @@ function DH_Profile() {
               name="role"
               value={profile.role}
               onChange={handleChange}
-              disabled={!isEditing}
+              disabled
             >
               {roles.map((role) => (
                 <MenuItem key={role} value={role}>{role}</MenuItem>
@@ -322,7 +322,7 @@ function DH_Profile() {
               name="department"
               value={profile.department}
               onChange={handleChange}
-              disabled={!isEditing}
+              disabled
             >
               {departments.map((dept) => (
                 <MenuItem key={dept} value={dept}>{dept}</MenuItem>

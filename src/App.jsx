@@ -49,7 +49,9 @@ import CTN_PAR_ICS1 from "./pages/CustodianPages/CTN_PAR_ICS1.jsx";
 import CTN_InventoryReport from "./pages/CustodianPages/CTN_InventoryReport.jsx";
 import CTN_Notification from "./pages/CustodianPages/CTN_Notification.jsx";
 import CTN_Profile from "./pages/CustodianPages/CTN_Profile.jsx";
-
+import Disposal from "./pages/Disposal.jsx";
+import DH_PAR_ICS2 from "./pages/DeptHeadPages/DH_PAR_ICS2.jsx";
+import CTN_PAR_ICS2 from "./pages/CustodianPages/CTN_PAR_ICS2.jsx";
 
 
 function App() {
@@ -71,7 +73,7 @@ function App() {
         <Route path="/par-ics" element={<PAR_ICS1 />} />
         <Route path="/home-encoder" element={<Home_encoder />} />
         <Route path="/home-user" element={<Home_user />} />
-        <Route path="/par-ics2" element={<PAR_ICS2 />} />
+        <Route path="/par-ics2/:ids" element={<PAR_ICS2 />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/item-history" element={<Item_history />} />
         <Route path="/inspec-scanner" element={<Inspection_Scanner />} />
@@ -110,6 +112,9 @@ function App() {
         <Route path="/ctn-inventory" element={<CTN_InventoryReport />} />
         <Route path="/ctn-notification" element={<CTN_Notification />} />
         <Route path="/ctn-profile" element={<CTN_Profile />} />
+        <Route path="/disposal" element={<Disposal />} />
+        <Route path="/dh-par-ics2/:ids" element={<DH_PAR_ICS2 />} />
+        <Route path="/ctn-par-ics2/:ids" element={<CTN_PAR_ICS2 />} />
       </Routes>
     </Router>
   );

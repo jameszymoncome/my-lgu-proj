@@ -100,8 +100,7 @@ const Inspection = () => {
         navigate(path);
     };
     
-    const handleLogout = (index, path) => {
-        setSelectedIndex(index); // Update the selected menu item
+    const handleLogout = () => {
         Swal.fire({
           icon: "question",
           title: "Are you sure?",
@@ -120,7 +119,7 @@ const Inspection = () => {
           if (result.isConfirmed) {
             // Perform logout logic
             localStorage.clear(); // Clear user data
-            navigate(path); // Redirect to login page
+            navigate('/'); // Redirect to login page
           } else {
             // Optional: Handle "No" button click (if needed)
             console.log("User chose to stay logged in.");
@@ -137,21 +136,27 @@ const Inspection = () => {
     }
 
     const checkItemInfo = async (valueFromScan) => {
-        const value = valueFromScan || inputValue;
+        console.log(valueFromScan);
 
-        if(value === ''){
+        if(valueFromScan === ''){
             alert('Enter id');
             return;
         }
         try {
             const response = await axios.post("http://ppemanagement.andrieinthesun.com/scanItem.php", {
-                value: value,
+                valueFromScan: valueFromScan,
             });
     
             if (response.data.success) {
                 setItemGet(response.data.data[0]);
-                console.log(response.data.data[0]);
-                setNewCheck(true);
+                if(response.data.message == 'First'){
+                    console.log(response.data.message);
+                    setNewCheck(false);
+                }
+                else{
+                    console.log(response.data.message);
+                    setNewCheck(true);
+                }
                 setOpenOverlay(true);
             } else {
                 setMessages(response.data.message);
@@ -264,6 +269,12 @@ const Inspection = () => {
                         </ListItemIcon>
                         <ListItemText primary="Account Management" />
                       </ListItem>
+                      <ListItem button onClick={() => handleListItemClick("/department")}>
+                                                  <ListItemIcon>
+                                                    <TableChartIcon/>
+                                                  </ListItemIcon>
+                                                  <ListItemText primary="Department" />
+                                                </ListItem>
                       <ListItem button onClick={() => handleListItemClick("/notification")}>
                         <ListItemIcon>
                           <Notifications />
@@ -310,7 +321,7 @@ const Inspection = () => {
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
                             />
-                            <Button className="open-overlay-btn" onClick={() => checkItemInfo()}>Show Overlay</Button>
+                            <Button className="open-overlay-btn" onClick={() => checkItemInfo(inputValue)}>Show Overlay</Button>
                         </Box>
                     </div>
 
