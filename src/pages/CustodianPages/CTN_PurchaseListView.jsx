@@ -380,6 +380,7 @@ function CTN_PurchaseListView() {
                       value={item.quantity}
                       onChange={(e) => handleInputChange(index, "quantity", e.target.value)}
                       size="small"
+                      disabled
                     />
                   </TableCell>
                   <TableCell>
@@ -387,6 +388,7 @@ function CTN_PurchaseListView() {
                       value={item.description}
                       onChange={(e) => handleInputChange(index, "description", e.target.value)}
                       size="small"
+                      disabled
                     />
                   </TableCell>
 
@@ -396,20 +398,22 @@ function CTN_PurchaseListView() {
                       fullWidth
                       value={item.serialNo}
                       onChange={(e) => handleSerialChange(index, e.target.value)}
+                      disabled
                     />
                   </TableCell>
 
                   <TableCell>
-                    <TextField
+                    <TextField  
                       type="number"
                       value={item.unitPrice}
                       onChange={(e) => handleInputChange(index, "unitPrice", e.target.value)}
                       size="small"
+                      disabled
                     />
                   </TableCell>
                   <TableCell>{item.total.toLocaleString()}</TableCell>
                   <TableCell>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <LocalizationProvider dateAdapter={AdapterDateFns} disabled>
                       <DatePicker
                         value={item.date ? new Date(item.date) : null}
                         onChange={(newDate) => handleDateChange(index, newDate)}
@@ -420,6 +424,7 @@ function CTN_PurchaseListView() {
                           },
                         }}
                         format="yyyy-MM-dd"
+                        disabled
                       />
                     </LocalizationProvider>
                   </TableCell>
@@ -428,6 +433,7 @@ function CTN_PurchaseListView() {
                       color="primary"
                       checked={item.checked}
                       onChange={(e) => handleItemCheckChange(index, e.target.checked)}
+                      disabled
                     />
                   </TableCell>
                 </TableRow>
@@ -451,7 +457,7 @@ function CTN_PurchaseListView() {
             right: 20,
           }}
         >
-          <Button variant="outlined" color="primary" sx={{ marginRight: 2 }}>
+          {/* <Button variant="outlined" color="primary" sx={{ marginRight: 2 }}>
             Cancel
           </Button>
           <Button 
@@ -459,7 +465,7 @@ function CTN_PurchaseListView() {
             color="primary"
             onClick={handleSaveButton}>
             Save
-          </Button>
+          </Button> */}
         </Box>
       </div>
     </div>
