@@ -101,31 +101,31 @@ const DH_Inspection = () => {
     };
     
     const handleLogout = () => {
-            Swal.fire({
-              icon: "question",
-              title: "Are you sure?",
-              text: "Do you really want to log out?",
-              showCancelButton: true, // Show the "No" button
-              confirmButtonText: "Yes, Logout",
-              cancelButtonText: "No, Stay",
-              background: "#f9f9f9", // Light background
-              color: "#333", // Dark text color for contrast
-              confirmButtonColor: "#d33", // Red color for "Yes" button
-              cancelButtonColor: "#0F1D9F", // Blue color for "No" button
-              customClass: {
-                popup: "minimal-popup", // Add a custom class for further styling
-              },
-            }).then((result) => {
-              if (result.isConfirmed) {
-                // Perform logout logic
-                localStorage.clear(); // Clear user data
-                navigate('/'); // Redirect to login page
-              } else {
-                // Optional: Handle "No" button click (if needed)
-                console.log("User chose to stay logged in.");
-              }
-            });
-        };
+        Swal.fire({
+          icon: "question",
+          title: "Are you sure?",
+          text: "Do you really want to log out?",
+          showCancelButton: true, // Show the "No" button
+          confirmButtonText: "Yes, Logout",
+          cancelButtonText: "No, Stay",
+          background: "#f9f9f9", // Light background
+          color: "#333", // Dark text color for contrast
+          confirmButtonColor: "#d33", // Red color for "Yes" button
+          cancelButtonColor: "#0F1D9F", // Blue color for "No" button
+          customClass: {
+            popup: "minimal-popup", // Add a custom class for further styling
+          },
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Perform logout logic
+            localStorage.clear(); // Clear user data
+            navigate('/'); // Redirect to login page
+          } else {
+            // Optional: Handle "No" button click (if needed)
+            console.log("User chose to stay logged in.");
+          }
+        });
+    };
     
     const toggleReportMenu = () => {
         setReportMenuOpen((prev) => !prev);
@@ -136,21 +136,27 @@ const DH_Inspection = () => {
     }
 
     const checkItemInfo = async (valueFromScan) => {
-        const value = valueFromScan || inputValue;
+        console.log(valueFromScan);
 
-        if(value === ''){
+        if(valueFromScan === ''){
             alert('Enter id');
             return;
         }
         try {
             const response = await axios.post("http://ppemanagement.andrieinthesun.com/scanItem.php", {
-                value: value,
+                valueFromScan: valueFromScan,
             });
     
             if (response.data.success) {
                 setItemGet(response.data.data[0]);
-                console.log(response.data.data[0]);
-                setNewCheck(true);
+                if(response.data.message == 'First'){
+                    console.log(response.data.message);
+                    setNewCheck(false);
+                }
+                else{
+                    console.log(response.data.message);
+                    setNewCheck(true);
+                }
                 setOpenOverlay(true);
             } else {
                 setMessages(response.data.message);
@@ -181,6 +187,9 @@ const DH_Inspection = () => {
         }
     }
 
+    const handleViewReports = () => {
+      navigate("/dh-scanned-item");
+    }
 
 
     return (
@@ -285,78 +294,69 @@ const DH_Inspection = () => {
                             <h1>Inspection Component</h1>
                             <p>Record of Property or Equipment Issued</p>
                         </div>
-                        <button className="view-reports-button"><FaEye /> View Reports</button>
+                        <button className="view-reports-button" onClick={handleViewReports}><FaEye /> View Reports</button>
                     </div>
                     <hr className="header-divider" />
                 </header>
 
                 <div className="inspection-container">
-                    <div className="camera-screen">
-                        <video ref={videoRef} autoPlay playsInline muted></video>
-                    </div>
+                  <div className="camera-screen">
+                    <video ref={videoRef} autoPlay playsInline muted></video>
+                  </div>
 
-                    <div className="item-information">
-                        <h1>Item Information</h1>
-                        <Box>
-                            <TextField
-                                size="small"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
-                            />
-                            <Button className="open-overlay-btn" onClick={() => checkItemInfo()}>Show Overlay</Button>
-                        </Box>
-                    </div>
-
-                    {checkOverlay && (
-                        <div className="custom-overlay">
-                            <div className="overlay-content">
-                                <h2>Notice</h2>
+                  {checkOverlay && (
+                      <div className="custom-overlay">
+                          <div className="overlay-content">
+                              <h2>Notice</h2>
+                              <div className="center-button">
                                 <p>{messages}</p>
-                                <Button style={{ backgroundColor: "#0F1D9F", color: "white", marginTop: '20px'}} onClick={() => setCheckOverlay(false)}>Close</Button>
-                            </div>
-                        </div>
-                    )}
+                                <Button
+                                  style={{ backgroundColor: "#0F1D9F", color: "white", marginTop: '20px' }}
+                                  onClick={() => setCheckOverlay(false)}
+                                >
+                                  Close
+                                </Button>
+                              </div>
+                          </div>
+                      </div>
+                  )}
 
-                    {openOverlay && (
-                        <div className="custom-overlay">
-                            <div className="overlay-content">
-                                <h2>Item Information</h2>
-                                <p>Property/Inventory Number: {itemGet.item_id}</p>
-                                <p>PAR/ICS No. : {itemGet.form_id}</p>
-                                <p>Department: {itemGet.department}</p>
-                                <p>Custodian : {itemGet.fullname}</p>
-                                {newCheck && (
-                                    <div>
-                                        <p>Previous Check Inspection</p>
-                                        <p>Date: {itemGet.dates}</p>
-                                        <p>Status: {itemGet.status}</p>
-                                    </div>
-                                )}
-                                <p>Condition/Status :</p>
-                                <div style={{ display: 'flex', gap: '10px'}}>
-                                    <Button 
-                                        style={{ 
-                                            backgroundColor: "#0F1D9F",
-                                            color: "white",
-                                            flex: 1  }}
-                                            onClick={() => updateScanItem(itemGet.item_id, 'Serviceable')}
-                                        >
-                                            Serviceable
-                                    </Button>
-                                    <Button 
-                                        style={{ 
-                                            backgroundColor: "#0F1D9F",
-                                            color: "white",
-                                            flex: 1  }}
-                                            onClick={() => updateScanItem(itemGet.item_id, 'Unserviceable')}
-                                        >
-                                            Unserviceable
-                                    </Button>
-                                </div>
-                                <Button style={{ backgroundColor: "#0F1D9F", color: "white", marginTop: '20px'}} onClick={() => setOpenOverlay(false)}>Close</Button>
+                  <div className="item-information">
+                    {openOverlay ? (
+                        <>
+                            <h1>Item Information</h1>
+                            <p>Description: {itemGet.description}</p>
+                            <p className="property-number">Property/Inventory Number: {itemGet.item_id}</p>
+                            <p>PAR/ICS No.: {itemGet.form_id}</p>
+                            <p>Department/Custodian: {itemGet.department} {itemGet.fullname}</p>
+                            {/* <p>Condition/Status: {itemInfo.conditionStatus}</p> */}
+
+                            <div className="condition-buttons">
+                                <button onClick={() => updateScanItem(itemGet.item_id, 'Serviceable')}>Serviceable</button>
+                                <button onClick={() => updateScanItem(itemGet.item_id, 'Unserviceable')}>Unserviceable</button>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="placeholder-message">
+                            <div className="manual-search">
+                                <h2>Scan QR Code <br /> or Enter Property/Inventory Number:</h2>
+                                <input
+                                    id="manual-input"
+                                    type="text"
+                                    placeholder="Enter Property/Inventory Number"
+                                    value={inputValue} // Bind the input value to qrData
+                                    onChange={(e) => setInputValue(e.target.value)} // Update qrData on input change
+                                />
+                                <button
+                                    className="confirm-button"
+                                    onClick={() => checkItemInfo(inputValue)}
+                                >
+                                    Confirm
+                                </button>
                             </div>
                         </div>
                     )}
+                  </div>
                 </div>
             </div>
         </div>

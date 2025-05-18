@@ -54,12 +54,21 @@ const DH_Notification = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [openModal, setOpenModal] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState(null);
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
+    const userRoles = localStorage.getItem("userRole");
+    const depts = localStorage.getItem("userDepartment");
     const fetchPurchaseData = async () => {
       try {
-        const response = await axios.get("http://localhost/myServer/retrieve_purchase_request.php");
-        setPurchaseDataList(response.data.data);
+        const response = await axios.get("http://ppemanagement.andrieinthesun.com/getNotification.php", {
+          params: {
+            userRole: userRoles,
+            depts: depts,
+          }
+        });
+        console.log("Purchase Data:", response.data.data);
+        setNotifications(response.data.data);
       } catch (error) {
         console.error("Error fetching purchase data:", error);
         alert("Failed to fetch purchase data.");
@@ -73,17 +82,32 @@ const DH_Notification = () => {
     setSearchQuery(event.target.value);
   };
 
-  const notifications = [
-    { type: "Request", title: "Your request is approved", timestamp: "Mon, Mar 2, 3:07 PM", details: "We are pleased to inform you that your request for an office chair has been approved and is currently being processed by the General Services Office (GSO)." },
-    { type: "Inspection", title: "Reminder", timestamp: "Mon, Mar 2, 12:54 PM", details: "This is a reminder for your scheduled inspection." },
-    { type: "Request", title: "Your request is pending", timestamp: "Tue, Mar 3, 10:15 AM", details: "Your request is still pending approval." },
-  ];
+  // const notifications = [
+  //   { type: "Request", title: "Your request is approved", timestamp: "Mon, Mar 2, 3:07 PM", details: "We are pleased to inform you that your request for an office chair has been approved and is currently being processed by the General Services Office (GSO)." },
+  //   { type: "Inspection", title: "Reminder", timestamp: "Mon, Mar 2, 12:54 PM", details: "This is a reminder for your scheduled inspection." },
+  //   { type: "Request", title: "Your request is pending", timestamp: "Tue, Mar 3, 10:15 AM", details: "Your request is still pending approval." },
+  // ];
+
+  // const filteredData = notifications.filter((notification) => {
+  //   if (activeTab === 0) return true; 
+  //   if (activeTab === 1) return notification.type === "Inspection"; 
+  //   if (activeTab === 2) return notification.type === "Request"; 
+  //   return false;
+  // });
 
   const filteredData = notifications.filter((notification) => {
-    if (activeTab === 0) return true; 
-    if (activeTab === 1) return notification.type === "Inspection"; 
-    if (activeTab === 2) return notification.type === "Request"; 
-    return false;
+    // Filter by tab
+    if (activeTab === 1 && notification.type !== "Inspection") return false;
+    if (activeTab === 2 && notification.type !== "Request") return false;
+
+    // Filter by search query (case-insensitive, checks department, status, and stats)
+    if (searchQuery.trim() === "") return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      (notification.department && notification.department.toLowerCase().includes(q)) ||
+      (notification.status && notification.status.toLowerCase().includes(q)) ||
+      (notification.stats && notification.stats.toLowerCase().includes(q))
+    );
   });
 
   const handleLogout = () => {
@@ -126,8 +150,19 @@ const DH_Notification = () => {
   };
 
   const handleRowClick = (notification) => {
-    setSelectedNotification(notification);
-    setOpenModal(true);
+    if(notification.type === "Request") {
+      if(notification.stats === "Approved") {
+        navigate(`/dh-purchase-list-view/${notification.form_id}`);
+      }
+      else{
+        localStorage.setItem("selectedReqId", notification.form_id);
+        navigate(`/dh-purchase-list`);
+      }
+    }
+    else {
+      setSelectedNotification(notification);
+      setOpenModal(true);
+    }
   };
 
   const handleCloseModal = () => {
@@ -136,104 +171,105 @@ const DH_Notification = () => {
   };
 
   const handleListItemClick = (path) => {
-      navigate(path);
-    };
+    navigate(path);
+  };
+
+  const currentDate = new Date().toLocaleDateString();
 
   return (
     <div style={{ display: "flex" }}>
       <Header />
 
-      {/* Drawer */}
       <Drawer
-              variant="permanent"
-              sx={{
-                width: drawerWidth,
-                flexShrink: 0,
-                "& .MuiDrawer-paper": {
-                  width: drawerWidth,
-                  boxSizing: "border-box",
-                  marginTop: "4rem",
-                  backgroundColor: "#FFFF",
-                  cursor: "pointer",
-                },
-              }}
-            >
-              <List>
-                <ListItem button onClick={() => handleListItemClick("/dh-home-1")} >
-                  <ListItemIcon>
-                    <HomeIcon/>
-                  </ListItemIcon>
-                  <ListItemText primary="Home" />
-                </ListItem>
-                <ListItem button onClick={() => handleListItemClick("/dh-purchase-request")} >
-                  <ListItemIcon>
-                    <AssignmentIcon/>
-                  </ListItemIcon>
-                  <ListItemText primary="Purchase Request" />
-                </ListItem>
-                <ListItem button onClick={() => handleListItemClick("/dh-purchase-list")} >
-                  <ListItemIcon>
-                    <AssignmentIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Purchase List" />
-                </ListItem>
-                <ListItem button onClick={() => handleListItemClick("/dh-inspection")}>
-                  <ListItemIcon>
-                    <ReportIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Inspection" />
-                </ListItem>
-                <ListItem button onClick={toggleReportMenu}>
-                  <ListItemIcon>
-                    <ReportIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Records" />
-                  {isReportMenuOpen ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={isReportMenuOpen} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
-                    <ListItem
-                      button
-                      style={{ paddingLeft: 32 }}
-                      onClick={() => handleListItemClick("/dh-parics1")}
-                    >
-                      <ListItemIcon>
-                                      <AssignmentIcon />
-                                    </ListItemIcon>
-                      <ListItemText primary="PAR & ICS" />
-                    </ListItem>
-                    <ListItem
-                      button
-                      style={{ paddingLeft: 32 }}
-                      onClick={() => handleListItemClick("/dh-inventory")}
-                    >
-                      <ListItemIcon>
-                                      <AssignmentIcon/>
-                                    </ListItemIcon>
-                      <ListItemText primary="Inventory" />
-                    </ListItem>
-                  </List>
-                </Collapse>
-                <ListItem button onClick={() => handleListItemClick("/dh-notification")} style={{ color: "#0F1D9F"}}>
-                  <ListItemIcon>
-                    <Notifications />
-                  </ListItemIcon>
-                  <ListItemText primary="Notification" style={{ color: "#0F1D9F"}}/>
-                </ListItem>
-                <ListItem button onClick={() => handleListItemClick("/dh-profile")}>
-                  <ListItemIcon>
-                    <AccountCircleIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Profile" />
-                </ListItem>
-                <ListItem button onClick={handleLogout}>
-                  <ListItemIcon>
-                    <LogoutIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Logout" />
-                </ListItem>
-              </List>
-            </Drawer>
+        variant="permanent"
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
+            width: drawerWidth,
+            boxSizing: "border-box",
+            marginTop: "4rem",
+            backgroundColor: "#FFFF",
+            cursor: "pointer",
+          },
+        }}
+      >
+        <List>
+          <ListItem button onClick={() => handleListItemClick("/dh-home-1")} >
+            <ListItemIcon>
+              <HomeIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Home" />
+          </ListItem>
+          <ListItem button onClick={() => handleListItemClick("/dh-purchase-request")} >
+            <ListItemIcon>
+              <AssignmentIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Purchase Request" />
+          </ListItem>
+          <ListItem button onClick={() => handleListItemClick("/dh-purchase-list")} >
+            <ListItemIcon>
+              <AssignmentIcon />
+            </ListItemIcon>
+            <ListItemText primary="Purchase List" />
+          </ListItem>
+          <ListItem button onClick={() => handleListItemClick("/dh-inspection")}>
+            <ListItemIcon>
+              <ReportIcon />
+            </ListItemIcon>
+            <ListItemText primary="Inspection" />
+          </ListItem>
+          <ListItem button onClick={toggleReportMenu}>
+            <ListItemIcon>
+              <ReportIcon />
+            </ListItemIcon>
+            <ListItemText primary="Records" />
+            {isReportMenuOpen ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={isReportMenuOpen} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem
+                button
+                style={{ paddingLeft: 32 }}
+                onClick={() => handleListItemClick("/dh-parics1")}
+              >
+                <ListItemIcon>
+                                <AssignmentIcon />
+                              </ListItemIcon>
+                <ListItemText primary="PAR & ICS" />
+              </ListItem>
+              <ListItem
+                button
+                style={{ paddingLeft: 32 }}
+                onClick={() => handleListItemClick("/dh-inventory")}
+              >
+                <ListItemIcon>
+                                <AssignmentIcon/>
+                              </ListItemIcon>
+                <ListItemText primary="Inventory" />
+              </ListItem>
+            </List>
+          </Collapse>
+          <ListItem button onClick={() => handleListItemClick("/dh-notification")} style={{ color: "#0F1D9F"}}>
+            <ListItemIcon>
+              <Notifications />
+            </ListItemIcon>
+            <ListItemText primary="Notification" style={{ color: "#0F1D9F"}}/>
+          </ListItem>
+          <ListItem button onClick={() => handleListItemClick("/dh-profile")}>
+            <ListItemIcon>
+              <AccountCircleIcon />
+            </ListItemIcon>
+            <ListItemText primary="Profile" />
+          </ListItem>
+          <ListItem button onClick={handleLogout}>
+            <ListItemIcon>
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItem>
+        </List>
+      </Drawer>
 
       {/* Main Content */}
       <div style={{ flexGrow: 1, padding: "40px", marginTop: "40px" }}>
@@ -319,10 +355,16 @@ const DH_Notification = () => {
                     {/* Notification Content */}
                     <Box>
                       <Typography variant="body1" sx={{ fontWeight: "bold", color: "#0F1D9F" }}>
-                        {notification.title}
+                        {notification.stats === 'Approved' || notification.stats === null
+                          ? `The ${notification.type === 'Request' ? 'request item' : 'inspection'} of your ${notification.department} department is ${
+                              notification.type === 'Request'
+                                ? 'already arrived'
+                                : notification.status
+                            }.`
+                          : `There are new request item from of your ${notification.department} department. Check it to approve it.`}
                       </Typography>
                       <Typography variant="body2" sx={{ color: "rgba(0, 0, 0, 0.6)" }}>
-                        {notification.timestamp}
+                        {notification.dates === null ? currentDate : notification.dates}
                       </Typography>
                     </Box>
                   </TableCell>
@@ -350,13 +392,13 @@ const DH_Notification = () => {
             {selectedNotification && (
               <>
                 <Typography variant="h5" sx={{ fontWeight: "bold", color: "#0F1D9F", marginBottom: 2 }}>
-                  {selectedNotification.title}
+                  {selectedNotification.department}
                 </Typography>
                 <Typography variant="subtitle1" sx={{ color: "#0F1D9F", marginBottom: 1 }}>
-                  {selectedNotification.timestamp}
+                  {selectedNotification.dates === null ? currentDate : selectedNotification.dates}
                 </Typography>
                 <Typography variant="body1" sx={{ color: "rgba(0, 0, 0, 0.8)" }}>
-                  {selectedNotification.details}
+                  {`The progress of inspection of ${selectedNotification.department} is ${selectedNotification.status}. ${selectedNotification.inspected_count} of ${selectedNotification.total_item_count} items have been inspected.`}
                 </Typography>
               </>
             )}

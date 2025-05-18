@@ -45,6 +45,7 @@ import { styled } from "@mui/system";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { set } from "date-fns";
 
 const drawerWidth = 240;
 
@@ -76,8 +77,10 @@ const PurchaseList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("");
+  const [selectedReqId, setSelectedReqId] = useState('');
 
   useEffect(() => {
+    setSelectedReqId(localStorage.getItem('selectedReqId') || '');
     const fetchPurchaseData = async () => {
       try {
         const response = await axios.get("http://ppemanagement.andrieinthesun.com/retrieve_purchase_request.php");
@@ -358,7 +361,13 @@ const PurchaseList = () => {
                 </TableRow>
               ) : (
                 filteredData.map((row, index) => (
-                  <TableRow key={index}>
+                  <TableRow key={index}
+                    onClick={() => setSelectedReqId(row.req_id)}
+                    style={{
+                      backgroundColor: selectedReqId === row.req_id ? "#e3eaff" : "inherit",
+                      cursor: "pointer"
+                    }}
+                  >
                     <StyledTableDataCell>{row.req_id}</StyledTableDataCell>
                     <StyledTableDataCell>{row.date}</StyledTableDataCell>
                     <StyledTableDataCell>{row.requestedBy}</StyledTableDataCell>

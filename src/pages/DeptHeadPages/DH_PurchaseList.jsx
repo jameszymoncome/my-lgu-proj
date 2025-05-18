@@ -71,9 +71,12 @@ const DH_PurchaseList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("");
+  const [selectedReqId, setSelectedReqId] = useState('');
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
+    setSelectedReqId(localStorage.getItem('selectedReqId') || '');
+    
     if (!userId) return;
     const fetchPurchaseData = async () => {
       try {
@@ -346,7 +349,13 @@ const DH_PurchaseList = () => {
                 </TableRow>
               ) : (
                 filteredData.map((row, index) => (
-                  <TableRow key={index}>
+                  <TableRow key={index}
+                    onClick={() => setSelectedReqId(row.req_id)}
+                    style={{
+                      backgroundColor: selectedReqId === row.req_id ? "#e3eaff" : "inherit",
+                      cursor: "pointer"
+                    }}
+                  >
                     <StyledTableDataCell>{row.req_id}</StyledTableDataCell>
                     <StyledTableDataCell>{row.date}</StyledTableDataCell>
                     <StyledTableDataCell>{row.requestedBy}</StyledTableDataCell>

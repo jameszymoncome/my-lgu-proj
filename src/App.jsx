@@ -52,6 +52,8 @@ import CTN_Profile from "./pages/CustodianPages/CTN_Profile.jsx";
 import Disposal from "./pages/Disposal.jsx";
 import DH_PAR_ICS2 from "./pages/DeptHeadPages/DH_PAR_ICS2.jsx";
 import CTN_PAR_ICS2 from "./pages/CustodianPages/CTN_PAR_ICS2.jsx";
+import ScannedItem from "./pages/ScannedItem.jsx";
+import DH_ScannedItem from "./pages/DeptHeadPages/DH_ScannedItems.jsx";
 
 
 function App() {
@@ -115,6 +117,8 @@ function App() {
         <Route path="/disposal" element={<Disposal />} />
         <Route path="/dh-par-ics2/:ids" element={<DH_PAR_ICS2 />} />
         <Route path="/ctn-par-ics2/:ids" element={<CTN_PAR_ICS2 />} />
+        <Route path="/scanned-item" element={<ScannedItem />} />
+        <Route path="/dh-scanned-item" element={<DH_ScannedItem />} />
       </Routes>
     </Router>
   );

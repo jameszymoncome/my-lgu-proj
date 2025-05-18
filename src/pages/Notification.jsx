@@ -55,12 +55,21 @@ const Notification = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [openModal, setOpenModal] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState(null);
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
+    const userRoles = localStorage.getItem("userRole");
+    const depts = localStorage.getItem("userDepartment");
     const fetchPurchaseData = async () => {
       try {
-        const response = await axios.get("http://localhost/myServer/retrieve_purchase_request.php");
-        setPurchaseDataList(response.data.data);
+        const response = await axios.get("http://ppemanagement.andrieinthesun.com/getNotification.php", {
+          params: {
+            userRole: userRoles,
+            depts: depts,
+          }
+        });
+        console.log("Purchase Data:", response.data.data);
+        setNotifications(response.data.data);
       } catch (error) {
         console.error("Error fetching purchase data:", error);
         alert("Failed to fetch purchase data.");
@@ -74,17 +83,32 @@ const Notification = () => {
     setSearchQuery(event.target.value);
   };
 
-  const notifications = [
-    { type: "Request", title: "Your request is approved", timestamp: "Mon, Mar 2, 3:07 PM", details: "We are pleased to inform you that your request for an office chair has been approved and is currently being processed by the General Services Office (GSO)." },
-    { type: "Inspection", title: "Reminder", timestamp: "Mon, Mar 2, 12:54 PM", details: "This is a reminder for your scheduled inspection." },
-    { type: "Request", title: "Your request is pending", timestamp: "Tue, Mar 3, 10:15 AM", details: "Your request is still pending approval." },
-  ];
+  // const notifications = [
+  //   { type: "Request", title: "Your request is approved", timestamp: "Mon, Mar 2, 3:07 PM", details: "We are pleased to inform you that your request for an office chair has been approved and is currently being processed by the General Services Office (GSO)." },
+  //   { type: "Inspection", title: "Reminder", timestamp: "Mon, Mar 2, 12:54 PM", details: "This is a reminder for your scheduled inspection." },
+  //   { type: "Request", title: "Your request is pending", timestamp: "Tue, Mar 3, 10:15 AM", details: "Your request is still pending approval." },
+  // ];
+
+  // const filteredData = notifications.filter((notification) => {
+  //   if (activeTab === 0) return true; 
+  //   if (activeTab === 1) return notification.type === "Inspection"; 
+  //   if (activeTab === 2) return notification.type === "Request"; 
+  //   return false;
+  // });
 
   const filteredData = notifications.filter((notification) => {
-    if (activeTab === 0) return true; 
-    if (activeTab === 1) return notification.type === "Inspection"; 
-    if (activeTab === 2) return notification.type === "Request"; 
-    return false;
+    // Filter by tab
+    if (activeTab === 1 && notification.type !== "Inspection") return false;
+    if (activeTab === 2 && notification.type !== "Request") return false;
+
+    // Filter by search query (case-insensitive, checks department, status, and stats)
+    if (searchQuery.trim() === "") return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      (notification.department && notification.department.toLowerCase().includes(q)) ||
+      (notification.status && notification.status.toLowerCase().includes(q)) ||
+      (notification.stats && notification.stats.toLowerCase().includes(q))
+    );
   });
 
   const handleLogout = () => {
@@ -127,8 +151,19 @@ const Notification = () => {
   };
 
   const handleRowClick = (notification) => {
-    setSelectedNotification(notification);
-    setOpenModal(true);
+    if(notification.type === "Request") {
+      if(notification.stats === "Approved") {
+        navigate(`/purchase-list-view/${notification.form_id}`);
+      }
+      else{
+        localStorage.setItem("selectedReqId", notification.form_id);
+        navigate(`/purchase-list`);
+      }
+    }
+    else{
+      setSelectedNotification(notification);
+      setOpenModal(true);
+    }
   };
 
   const handleCloseModal = () => {
@@ -137,8 +172,9 @@ const Notification = () => {
   };
 
   const handleListItemClick = (path) => {
-      navigate(path);
-    };
+    navigate(path);
+  };
+  const currentDate = new Date().toLocaleDateString();
 
   return (
     <div style={{ display: "flex" }}>
@@ -332,10 +368,11 @@ const Notification = () => {
                     {/* Notification Content */}
                     <Box>
                       <Typography variant="body1" sx={{ fontWeight: "bold", color: "#0F1D9F" }}>
-                        {notification.title}
+                        {`The ${notification.type === 'Request' ? 'request' : 'inspection'} of ${notification.department} is ${notification.type === 'Request' ? notification.stats : notification.status}` }
+                        {/* {notification.form_id === null ? `The request of ${notification.department} is ${notification.stats}` : notification.form_id} */}
                       </Typography>
                       <Typography variant="body2" sx={{ color: "rgba(0, 0, 0, 0.6)" }}>
-                        {notification.timestamp}
+                        {notification.dates === null ? currentDate : notification.dates}
                       </Typography>
                     </Box>
                   </TableCell>
@@ -363,13 +400,13 @@ const Notification = () => {
             {selectedNotification && (
               <>
                 <Typography variant="h5" sx={{ fontWeight: "bold", color: "#0F1D9F", marginBottom: 2 }}>
-                  {selectedNotification.title}
+                  {selectedNotification.department}
                 </Typography>
                 <Typography variant="subtitle1" sx={{ color: "#0F1D9F", marginBottom: 1 }}>
-                  {selectedNotification.timestamp}
+                  {selectedNotification.dates === null ? currentDate : selectedNotification.dates}
                 </Typography>
                 <Typography variant="body1" sx={{ color: "rgba(0, 0, 0, 0.8)" }}>
-                  {selectedNotification.details}
+                  {`The progress of inspection of ${selectedNotification.department} is ${selectedNotification.status}. ${selectedNotification.inspected_count} of ${selectedNotification.total_item_count} items have been inspected.`}
                 </Typography>
               </>
             )}

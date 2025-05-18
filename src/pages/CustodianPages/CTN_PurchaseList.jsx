@@ -45,9 +45,11 @@ const CTN_PurchaseList = () => {
   const [isReportMenuOpen, setReportMenuOpen] = useState(false);
   const [purchaseDataList, setPurchaseDataList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedReqId, setSelectedReqId] = useState('');
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
+    setSelectedReqId(localStorage.getItem('selectedReqId') || '');
     if (!userId) return;
     const fetchPurchaseData = async () => {
       try {
@@ -270,7 +272,13 @@ const CTN_PurchaseList = () => {
                 </TableRow>
               ) : (
                 filteredData.map((row, index) => (
-                  <TableRow key={index}>
+                  <TableRow key={index}
+                    onClick={() => setSelectedReqId(row.req_id)}
+                    style={{
+                      backgroundColor: selectedReqId === row.req_id ? "#e3eaff" : "inherit",
+                      cursor: "pointer"
+                    }}
+                  >
                     <StyledTableDataCell>{row.req_id}</StyledTableDataCell>
                     <StyledTableDataCell>{row.date}</StyledTableDataCell>
                     <StyledTableDataCell>{row.requestedBy}</StyledTableDataCell>

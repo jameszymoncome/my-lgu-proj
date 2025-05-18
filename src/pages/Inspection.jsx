@@ -187,6 +187,9 @@ const Inspection = () => {
         }
     }
 
+    const handleViewReports = () => {
+      navigate("/scanned-item");
+    }
 
 
     return (
@@ -194,107 +197,107 @@ const Inspection = () => {
             <Header />
 
             <Drawer
-                    variant="permanent"
-                    sx={{
-                      width: drawerWidth,
-                      flexShrink: 0,
-                      "& .MuiDrawer-paper": {
-                        width: drawerWidth,
-                        boxSizing: "border-box",
-                        marginTop: "4rem",
-                        backgroundColor: "#FFFF",
-                        cursor: "pointer",
-                      },
-                    }}
-                  >
-                    <List>
-                      <ListItem button onClick={() => handleListItemClick("/home-1")} >
-                        <ListItemIcon>
-                          <HomeIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Home" />
-                      </ListItem>
-                      <ListItem button onClick={() => handleListItemClick("/purchase-request")}>
-                        <ListItemIcon>
-                          <AssignmentIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Purchase Request" />
-                      </ListItem>
-                      <ListItem button onClick={() => handleListItemClick("/purchase-list")}>
-                        <ListItemIcon>
-                          <AssignmentIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Purchase List" />
-                      </ListItem>
-                      <ListItem button onClick={() => handleListItemClick("/inspection")} style={{ color: "#0F1D9F"}}>
-                        <ListItemIcon>
-                          <ReportIcon style={{ color: "#0F1D9F"}}/>
-                        </ListItemIcon>
-                        <ListItemText primary="Inspection" />
-                      </ListItem>
-                      <ListItem button onClick={toggleReportMenu}>
-                        <ListItemIcon>
-                          <ReportIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Records" />
-                        {isReportMenuOpen ? <ExpandLess /> : <ExpandMore />}
-                      </ListItem>
-                      <Collapse in={isReportMenuOpen} timeout="auto" unmountOnExit>
-                        <List component="div" disablePadding>
-                          <ListItem
-                            button
-                            style={{ paddingLeft: 32 }}
-                            onClick={() => handleListItemClick("/par-ics")}
-                          >
-                            <ListItemIcon>
-                                            <AssignmentIcon/>
-                                          </ListItemIcon>
-                            <ListItemText primary="PAR & ICS" />
-                          </ListItem>
-                          <ListItem
-                            button
-                            style={{ paddingLeft: 32 }}
-                            onClick={() => handleListItemClick("/inventory")}
-                          >
-                            <ListItemIcon>
-                                            <AssignmentIcon/>
-                                          </ListItemIcon>
-                            <ListItemText primary="Inventory" />
-                          </ListItem>
-                        </List>
-                      </Collapse>
-                      <ListItem button onClick={() => handleListItemClick("/account-management")}>
-                        <ListItemIcon>
-                          <PeopleIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Account Management" />
-                      </ListItem>
-                      <ListItem button onClick={() => handleListItemClick("/department")}>
-                                                  <ListItemIcon>
-                                                    <TableChartIcon/>
-                                                  </ListItemIcon>
-                                                  <ListItemText primary="Department" />
-                                                </ListItem>
-                      <ListItem button onClick={() => handleListItemClick("/notification")}>
-                        <ListItemIcon>
-                          <Notifications />
-                        </ListItemIcon>
-                        <ListItemText primary="Notification" />
-                      </ListItem>
-                      <ListItem button onClick={() => handleListItemClick("/profile")}>
-                        <ListItemIcon>
-                          <AccountCircleIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Profile" />
-                      </ListItem>
-                      <ListItem button onClick={handleLogout}>
-                        <ListItemIcon>
-                          <LogoutIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Logout" />
-                      </ListItem>
-                    </List>
-                  </Drawer>
+              variant="permanent"
+              sx={{
+                width: drawerWidth,
+                flexShrink: 0,
+                "& .MuiDrawer-paper": {
+                  width: drawerWidth,
+                  boxSizing: "border-box",
+                  marginTop: "4rem",
+                  backgroundColor: "#FFFF",
+                  cursor: "pointer",
+                },
+              }}
+            >
+              <List>
+                <ListItem button onClick={() => handleListItemClick("/home-1")} >
+                  <ListItemIcon>
+                    <HomeIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Home" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/purchase-request")}>
+                  <ListItemIcon>
+                    <AssignmentIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Purchase Request" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/purchase-list")}>
+                  <ListItemIcon>
+                    <AssignmentIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Purchase List" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/inspection")} style={{ color: "#0F1D9F"}}>
+                  <ListItemIcon>
+                    <ReportIcon style={{ color: "#0F1D9F"}}/>
+                  </ListItemIcon>
+                  <ListItemText primary="Inspection" />
+                </ListItem>
+                <ListItem button onClick={toggleReportMenu}>
+                  <ListItemIcon>
+                    <ReportIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Records" />
+                  {isReportMenuOpen ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={isReportMenuOpen} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItem
+                      button
+                      style={{ paddingLeft: 32 }}
+                      onClick={() => handleListItemClick("/par-ics")}
+                    >
+                      <ListItemIcon>
+                                      <AssignmentIcon/>
+                                    </ListItemIcon>
+                      <ListItemText primary="PAR & ICS" />
+                    </ListItem>
+                    <ListItem
+                      button
+                      style={{ paddingLeft: 32 }}
+                      onClick={() => handleListItemClick("/inventory")}
+                    >
+                      <ListItemIcon>
+                                      <AssignmentIcon/>
+                                    </ListItemIcon>
+                      <ListItemText primary="Inventory" />
+                    </ListItem>
+                  </List>
+                </Collapse>
+                <ListItem button onClick={() => handleListItemClick("/account-management")}>
+                  <ListItemIcon>
+                    <PeopleIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Account Management" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/department")}>
+                                            <ListItemIcon>
+                                              <TableChartIcon/>
+                                            </ListItemIcon>
+                                            <ListItemText primary="Department" />
+                                          </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/notification")}>
+                  <ListItemIcon>
+                    <Notifications />
+                  </ListItemIcon>
+                  <ListItemText primary="Notification" />
+                </ListItem>
+                <ListItem button onClick={() => handleListItemClick("/profile")}>
+                  <ListItemIcon>
+                    <AccountCircleIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Profile" />
+                </ListItem>
+                <ListItem button onClick={handleLogout}>
+                  <ListItemIcon>
+                    <LogoutIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Logout" />
+                </ListItem>
+              </List>
+            </Drawer>
 
             <div style={{ flexGrow: 1, padding: "80px 40px" }}>
                 <header className="inventory-header">
@@ -303,78 +306,69 @@ const Inspection = () => {
                             <h1>Inspection Component</h1>
                             <p>Record of Property or Equipment Issued</p>
                         </div>
-                        <button className="view-reports-button"><FaEye /> View Reports</button>
+                        <button className="view-reports-button" onClick={handleViewReports}><FaEye /> View Reports</button>
                     </div>
                     <hr className="header-divider" />
                 </header>
 
                 <div className="inspection-container">
-                    <div className="camera-screen">
-                        <video ref={videoRef} autoPlay playsInline muted></video>
-                    </div>
+                  <div className="camera-screen">
+                    <video ref={videoRef} autoPlay playsInline muted></video>
+                  </div>
 
-                    <div className="item-information">
-                        <h1>Item Information</h1>
-                        <Box>
-                            <TextField
-                                size="small"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
-                            />
-                            <Button className="open-overlay-btn" onClick={() => checkItemInfo(inputValue)}>Show Overlay</Button>
-                        </Box>
-                    </div>
-
-                    {checkOverlay && (
-                        <div className="custom-overlay">
-                            <div className="overlay-content">
-                                <h2>Notice</h2>
+                  {checkOverlay && (
+                      <div className="custom-overlay">
+                          <div className="overlay-content">
+                              <h2>Notice</h2>
+                              <div className="center-button">
                                 <p>{messages}</p>
-                                <Button style={{ backgroundColor: "#0F1D9F", color: "white", marginTop: '20px'}} onClick={() => setCheckOverlay(false)}>Close</Button>
-                            </div>
-                        </div>
-                    )}
+                                <Button
+                                  style={{ backgroundColor: "#0F1D9F", color: "white", marginTop: '20px' }}
+                                  onClick={() => setCheckOverlay(false)}
+                                >
+                                  Close
+                                </Button>
+                              </div>
+                          </div>
+                      </div>
+                  )}
 
-                    {openOverlay && (
-                        <div className="custom-overlay">
-                            <div className="overlay-content">
-                                <h2>Item Information</h2>
-                                <p>Property/Inventory Number: {itemGet.item_id}</p>
-                                <p>PAR/ICS No. : {itemGet.form_id}</p>
-                                <p>Department: {itemGet.department}</p>
-                                <p>Custodian : {itemGet.fullname}</p>
-                                {newCheck && (
-                                    <div>
-                                        <p>Previous Check Inspection</p>
-                                        <p>Date: {itemGet.dates}</p>
-                                        <p>Status: {itemGet.status}</p>
-                                    </div>
-                                )}
-                                <p>Condition/Status :</p>
-                                <div style={{ display: 'flex', gap: '10px'}}>
-                                    <Button 
-                                        style={{ 
-                                            backgroundColor: "#0F1D9F",
-                                            color: "white",
-                                            flex: 1  }}
-                                            onClick={() => updateScanItem(itemGet.item_id, 'Serviceable')}
-                                        >
-                                            Serviceable
-                                    </Button>
-                                    <Button 
-                                        style={{ 
-                                            backgroundColor: "#0F1D9F",
-                                            color: "white",
-                                            flex: 1  }}
-                                            onClick={() => updateScanItem(itemGet.item_id, 'Unserviceable')}
-                                        >
-                                            Unserviceable
-                                    </Button>
-                                </div>
-                                <Button style={{ backgroundColor: "#0F1D9F", color: "white", marginTop: '20px'}} onClick={() => setOpenOverlay(false)}>Close</Button>
+                  <div className="item-information">
+                    {openOverlay ? (
+                        <>
+                            <h1>Item Information</h1>
+                            <p>Description: {itemGet.description}</p>
+                            <p className="property-number">Property/Inventory Number: {itemGet.item_id}</p>
+                            <p>PAR/ICS No.: {itemGet.form_id}</p>
+                            <p>Department/Custodian: {itemGet.department} {itemGet.fullname}</p>
+                            {/* <p>Condition/Status: {itemInfo.conditionStatus}</p> */}
+
+                            <div className="condition-buttons">
+                                <button onClick={() => updateScanItem(itemGet.item_id, 'Serviceable')}>Serviceable</button>
+                                <button onClick={() => updateScanItem(itemGet.item_id, 'Unserviceable')}>Unserviceable</button>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="placeholder-message">
+                            <div className="manual-search">
+                                <h2>Scan QR Code <br /> or Enter Property/Inventory Number:</h2>
+                                <input
+                                    id="manual-input"
+                                    type="text"
+                                    placeholder="Enter Property/Inventory Number"
+                                    value={inputValue} // Bind the input value to qrData
+                                    onChange={(e) => setInputValue(e.target.value)} // Update qrData on input change
+                                />
+                                <button
+                                    className="confirm-button"
+                                    onClick={() => checkItemInfo(inputValue)}
+                                >
+                                    Confirm
+                                </button>
                             </div>
                         </div>
                     )}
+                  </div>
                 </div>
             </div>
         </div>
