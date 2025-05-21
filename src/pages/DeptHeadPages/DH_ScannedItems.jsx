@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./Purchase_list.css";
+import "../Purchase_list.css";
 import {
   Drawer,
   List,
@@ -34,7 +34,7 @@ import {
   CheckCircle as CheckCircleIcon,
   Cancel as CancelIcon,
 } from "@mui/icons-material";
-import Header from "../components/Header/Header.jsx";
+import Header from "../../components/Header/Header.jsx";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { use } from "react";
@@ -42,6 +42,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import html2pdf from 'html2pdf.js';
 import { Notifications, NotificationsActive, NotificationsNone, NotificationsOff } from "@mui/icons-material";
+import Swal from "sweetalert2";
 
 const drawerWidth = 240;
 
@@ -60,7 +61,7 @@ const DH_ScannedItem = () => {
     console.log("User Role:", deptUser);
     const fetchPurchaseData = async () => {
       try {
-        const response = await axios.get("http://localhost/myServer/getScannedItems.php", {
+        const response = await axios.get("http://ppemanagement.andrieinthesun.com/getScannedItems.php", {
           params: {
             userdRole: userdRole,
             deptUser: deptUser,
@@ -89,8 +90,8 @@ const DH_ScannedItem = () => {
           navigate(path);
       };
       
-      const handleLogout = () => {
-          Swal.fire({
+  const handleLogout = () => {
+    Swal.fire({
             icon: "question",
             title: "Are you sure?",
             text: "Do you really want to log out?",
@@ -114,7 +115,7 @@ const DH_ScannedItem = () => {
               console.log("User chose to stay logged in.");
             }
           });
-      };
+  };
   const toggleReportMenu = () => {
     setReportMenuOpen((prev) => !prev);
   };
