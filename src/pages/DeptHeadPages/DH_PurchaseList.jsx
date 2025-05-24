@@ -73,6 +73,9 @@ const DH_PurchaseList = () => {
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [selectedReqId, setSelectedReqId] = useState('');
 
+    const [firstName, setFirstName] = useState("");
+    const [userRole, setUserRole] = useState("");
+
   useEffect(() => {
         const storedFirstName = localStorage.getItem("firstName");
         const storeduserRole = localStorage.getItem("userRole");

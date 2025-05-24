@@ -55,6 +55,36 @@ const ScannedItem = () => {
   const [isTableExpanded, setIsTableExpanded] = useState(false);
   const [scanItems, setScanItems] = useState([]);
 
+  const [firstName, setFirstName] = useState("");
+  const [userRole, setUserRole] = useState("");
+  
+    useEffect(() => {
+      const storedFirstName = localStorage.getItem("firstName");
+      const storeduserRole = localStorage.getItem("userRole");
+      if (storedFirstName || storeduserRole) {
+          setFirstName(storedFirstName);
+          setUserRole(storeduserRole);
+      } else {
+          navigate("/login"); // Redirect to login if no first name is found
+      }
+
+        if (storeduserRole === "DEPARTMENT HEAD")  {
+          navigate("/dh-home-1")
+        }
+
+        else if (storeduserRole === "CUSTODIAN") {
+          navigate("/ctn-home-1")
+        }
+
+        else if (storeduserRole === "ADMIN") {
+          navigate("/scanned-item")
+        }
+
+        else {
+          navigate("/")
+        }
+  }, [navigate]);
+
   useEffect(() => {
     const userdRole = localStorage.getItem("userRole");
     const deptUser = localStorage.getItem("userDepartment");
