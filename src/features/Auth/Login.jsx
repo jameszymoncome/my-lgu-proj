@@ -86,6 +86,13 @@ function Login() {
       });
     }
   };
+
+  // unable to go back to the past ~~ HINDI PA BA SAPAT PAGPAPAHIRAP SA'KIN :<< ~~
+  window.onpageshow = function(event) {
+  if (event.persisted) {
+    window.location.reload();
+  }
+};
   
   
 
