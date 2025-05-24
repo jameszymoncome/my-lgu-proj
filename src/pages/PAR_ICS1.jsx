@@ -77,6 +77,36 @@ function PAR_ICS1() {
     getData();
   }, [])
 
+  const [firstName, setFirstName] = useState("");
+  const [userRole, setUserRole] = useState("");
+  
+    useEffect(() => {
+      const storedFirstName = localStorage.getItem("firstName");
+      const storeduserRole = localStorage.getItem("userRole");
+      if (storedFirstName || storeduserRole) {
+          setFirstName(storedFirstName);
+          setUserRole(storeduserRole);
+      } else {
+          navigate("/login"); // Redirect to login if no first name is found
+      }
+
+        if (storeduserRole === "DEPARTMENT HEAD")  {
+          navigate("/dh-home-1")
+        }
+
+        else if (storeduserRole === "CUSTODIAN") {
+          navigate("/ctn-home-1")
+        }
+
+        else if (storeduserRole === "ADMIN") {
+          navigate("/par-ics")
+        }
+
+        else {
+          navigate("/")
+        }
+  }, [navigate]);
+
   const getData = async () => {
     try {
       const response = await axios.get("http://ppemanagement.andrieinthesun.com/getParIcs.php");

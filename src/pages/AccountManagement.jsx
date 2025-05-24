@@ -48,6 +48,36 @@ function AccountManagement() {
   
   const [selectedIndex, setSelectedIndex] = useState(0); // Track selected menu item
   const [isReportMenuOpen, setReportMenuOpen] = useState(false); // Track sub-menu visibility
+
+  const [firstName, setFirstName] = useState("");
+  const [userRole, setUserRole] = useState("");
+  
+    useEffect(() => {
+      const storedFirstName = localStorage.getItem("firstName");
+      const storeduserRole = localStorage.getItem("userRole");
+      if (storedFirstName || storeduserRole) {
+          setFirstName(storedFirstName);
+          setUserRole(storeduserRole);
+      } else {
+          navigate("/login"); // Redirect to login if no first name is found
+      }
+
+        if (storeduserRole === "DEPARTMENT HEAD")  {
+          navigate("/dh-home-1")
+        }
+
+        else if (storeduserRole === "CUSTODIAN") {
+          navigate("/ctn-home-1")
+        }
+
+        else if (storeduserRole === "ADMIN") {
+          navigate("/account-management")
+        }
+
+        else {
+          navigate("/")
+        }
+  }, [navigate]);
   
   const handleListItemClick = (path) => {
     navigate(path); // Navigate to the selected route

@@ -60,6 +60,36 @@ function Department() {
   const [isAddModalOpen, setAddModalOpen] = useState(false); // State for Add Department Modal
   const [newDepartment, setNewDepartment] = useState({ name: "", status: "Active" }); // State for new department
 
+  const [firstName, setFirstName] = useState("");
+  const [userRole, setUserRole] = useState("");
+  
+    useEffect(() => {
+      const storedFirstName = localStorage.getItem("firstName");
+      const storeduserRole = localStorage.getItem("userRole");
+      if (storedFirstName || storeduserRole) {
+          setFirstName(storedFirstName);
+          setUserRole(storeduserRole);
+      } else {
+          navigate("/login"); // Redirect to login if no first name is found
+      }
+
+        if (storeduserRole === "DEPARTMENT HEAD")  {
+          navigate("/dh-home-1")
+        }
+
+        else if (storeduserRole === "CUSTODIAN") {
+          navigate("/ctn-home-1")
+        }
+
+        else if (storeduserRole === "ADMIN") {
+          navigate("/department")
+        }
+
+        else {
+          navigate("/")
+        }
+  }, [navigate]);
+
   // Fetch departments from the backend
   useEffect(() => {
     const fetchDepartments = async () => {
