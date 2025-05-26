@@ -1,0 +1,290 @@
+/* General Styles */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f9f9f9;
+}
+
+.home-container {
+  display: flex;
+  height: 100vh;
+  margin-top: 40px; /* Adjusted to remove extra space */
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 240px;
+  background-color: #0F1D9F;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.sidebar-btn {
+  background-color: transparent;
+  color: white;
+  border: none;
+  padding: 15px 20px;
+  margin: 10px 0;
+  text-align: left;
+  width: 100%;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar-btn:hover {
+  background-color: #155bb5;
+}
+
+.sidebar-btn:focus {
+  outline: none;
+}
+
+/* Main Content Styles */
+.main-contents {
+    flex-grow: 1;
+    padding: 80px 40px;
+}
+
+/* Dashboard Layout */
+.dashboard-layout {
+    display: grid;
+    grid-template-columns: .5fr 2fr; /* User card on the left, other cards on the right */
+    gap: 10px; /* Space between cards */
+    margin-top: 15px;
+}
+
+/* User Card */
+.user-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.user-title {
+    font-size: 16px; /* Adjust font size */
+    font-weight: 600; /* Slightly bold for emphasis */
+    color: #333; /* Darker text for contrast */
+    margin: 0; /* Remove default margin */
+    align-self: flex-start; /* Align the title to the left */
+    padding: 0 5px; /* Add padding for spacing */
+}
+
+.donut-chart-container{
+    padding-bottom: 15px; /* Add bottom padding for spacing */
+}
+
+/* Stat Group */
+.stat-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two columns for the other cards */
+    grid-template-rows: auto auto; /* Two rows with automatic height */
+    gap: 10px; /* Space between cards */
+}
+
+/* Stat Card Styling */
+.stat-card {
+    background-color: #ffffff; /* White background for contrast */
+    border: 1px solid #e0e0e0; /* Subtle border */
+    border-radius: 10px; /* Softer rounded corners */
+    padding: 5px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s, box-shadow 0.2s; /* Hover effect */
+}
+
+.stat-card:hover {
+    transform: translateY(-5px); /* Lift on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+}
+
+.stat-card h3 {
+    font-size: 16px;
+    color: #000; /* Darker text for better readability */
+    margin-bottom: 0;
+    font-weight: 600;
+    font-size: 16px; /* Adjust font size */
+}
+
+/* User Card with Donut Chart */
+.user-card .donut-chart {
+    width: 30px;
+    height: 30px;
+    margin: 10px auto; /* Center the chart */
+}
+
+/* Donut Chart Container */
+.donut-chart-container {
+    display: flex;
+    justify-content: center; /* Center the chart horizontally */
+    align-items: center; /* Center the chart vertically */
+    width: 100%; /* Full width of the container */
+    height: auto; /* Adjust height to fit content */
+    margin-top: 10px; /* Add spacing between the title and the chart */
+}
+
+/* Donut Chart */
+.donut-chart-container canvas {
+    width: 120px; /* Set the desired smaller width of the chart */
+    height: 120px; /* Set the desired smaller height of the chart */
+    margin: 0 auto; /* Center the chart horizontally */
+}
+
+/* Stat Row Styling */
+.stat-row {
+    display: flex;
+    justify-content: space-between; /* Align items to opposite sides */
+    align-items: center; /* Vertically center the content */
+    padding: 0 10px; /* Add horizontal padding for spacing */
+    width: 100%; /* Ensure it spans the full width of the card */
+    box-sizing: border-box; /* Include padding in width calculation */
+    white-space: nowrap; /* Prevent text wrapping */
+    gap: 50px; /* Space between items */
+}
+
+.stat-row h3 {
+    margin: 0;
+    font-size: 14px; /* Adjust font size for better readability */
+    font-weight: 500; /* Slightly bold for emphasis */
+    color: #000; /* Darker text for contrast */
+    overflow: hidden; /* Prevent overflow */
+    text-overflow: ellipsis; /* Add ellipsis if text overflows */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.stat-row .stat-value {
+    font-size: 20px; /* Larger font size for emphasis */
+    font-weight: bold;
+    color: #000; /* Black for emphasis */
+    text-align: right; /* Align text to the right */
+}
+
+/* Quick Links and Table Layout */
+.quick-links-and-table {
+    display: grid;
+    grid-template-columns: 0.2fr 2fr; /* Quick links on the left, table on the right */
+    gap: 20px; /* Space between quick links and table */
+    margin-top: 20px;
+}
+
+/* Quick Links Styling */
+.quick-links {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Space between each link */
+    align-items: center; /* Center the links */
+}
+
+.quick-link {
+    display: flex;
+    flex-direction: column; /* Stack icon and text vertically */
+    align-items: center;
+    justify-content: center;
+    background-color: #002D9C; /* Blue background */
+    color: #fff; /* White text */
+    border-radius: 10px; /* Rounded corners */
+    width: 90px; /* Set width to make it square */
+    height: 90px; /* Set height to make it square */
+    text-align: center;
+    font-size: 12px; /* Adjust font size for better readability */
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none; /* Remove underline for links */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+}
+
+.quick-link:hover {
+    background-color: #001F6E; /* Darker blue on hover */
+}
+
+.quick-link .icon {
+    font-size: 32px; /* Larger icon size */
+    margin-bottom: 5px; /* Add spacing between icon and text */
+}
+
+/* Table Styling */
+.table-container {
+    background-color: #ffffff; /* White background for contrast */
+    border: 1px solid #e0e0e0; /* Subtle border */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow */
+    padding: 15px;
+    overflow-x: auto; /* Enable horizontal scrolling for smaller screens */
+}
+
+.table-container table {
+    width: 100%; /* Full width of the container */
+    border-collapse: collapse; /* Remove gaps between table cells */
+}
+
+.table-container th,
+.table-container td {
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0; /* Subtle border between rows */
+    font-size: 14px;
+    color: #333; /* Darker text for better readability */
+}
+
+.table-container th {
+    font-weight: bold;
+    color: #002D9C; /* Blue text for headers */
+}
+
+.table-container tr:hover {
+    background-color: #f1f1f1; /* Light gray background on hover */
+}
+
+/* Recently Added Requests Table */
+.recent-requests-table {
+  width: 100%; /* Full width of the container */
+  border-collapse: collapse; /* Remove gaps between table cells */
+  margin-top: 1rem; /* Add spacing above the table */
+  font-size: 0.9rem; /* Adjust font size for readability */
+}
+
+.recent-requests-table th,
+.recent-requests-table td {
+  border: 1px solid #ddd; /* Add borders to cells */
+  padding: 8px; /* Add padding inside cells */
+  text-align: left; /* Align text to the left */
+}
+
+.recent-requests-table th {
+  background-color: #f4f4f4; /* Light gray background for header */
+  font-weight: bold; /* Make header text bold */
+}
+
+.recent-requests-table tr:nth-child(even) {
+  background-color: #f9f9f9; /* Add alternating row colors */
+}
+
+.recent-requests-table tr:hover {
+  background-color: #f1f1f1; /* Highlight row on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-layout {
+        grid-template-columns: 1fr; /* Single column layout for smaller screens */
+    }
+
+    .stat-group {
+        grid-template-columns: 1fr; /* Single column for stat cards */
+    }
+}

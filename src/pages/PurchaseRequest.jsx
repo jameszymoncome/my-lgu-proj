@@ -80,46 +80,46 @@ function PurchaseRequest() {
         }
   }, [navigate]);
 
+
   const handleListItemClick = (path) => {
       navigate(path);
     };
   
-    const handleLogout = () => {
-      Swal.fire({
-        icon: "question",
-        title: "Are you sure?",
-        text: "Do you really want to log out?",
-        showCancelButton: true, // Show the "No" button
-        confirmButtonText: "Yes, Logout",
-        cancelButtonText: "No, Stay",
-        background: "#f9f9f9", // Light background
-        color: "#333", // Dark text color for contrast
-        confirmButtonColor: "#d33", // Red color for "Yes" button
-        cancelButtonColor: "#0F1D9F", // Blue color for "No" button
-        customClass: {
-          popup: "minimal-popup", // Add a custom class for further styling
-        },
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Perform logout logic
-          localStorage.clear(); // Clear user data
-          navigate('/'); // Redirect to login page
-        } else {
-          // Optional: Handle "No" button click (if needed)
-          console.log("User chose to stay logged in.");
-        }
-      });
-    };
-  
-    const toggleReportMenu = () => {
-      setReportMenuOpen((prev) => !prev);
-    };
-  
-    const handleChange = (event) => {
-      setSelectedOption(event.target.value);
-    };
+  const handleLogout = () => {
+    Swal.fire({
+      icon: "question",
+      title: "Are you sure?",
+      text: "Do you really want to log out?",
+      showCancelButton: true, // Show the "No" button
+      confirmButtonText: "Yes, Logout",
+      cancelButtonText: "No, Stay",
+      background: "#f9f9f9", // Light background
+      color: "#333", // Dark text color for contrast
+      confirmButtonColor: "#d33", // Red color for "Yes" button
+      cancelButtonColor: "#0F1D9F", // Blue color for "No" button
+      customClass: {
+        popup: "minimal-popup", // Add a custom class for further styling
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Perform logout logic
+        localStorage.clear(); // Clear user data
+        navigate('/'); // Redirect to login page
+      } else {
+        // Optional: Handle "No" button click (if needed)
+        console.log("User chose to stay logged in.");
+      }
+    });
+  };
 
-  // Fetch receiver options when the department changes
+  const toggleReportMenu = () => {
+    setReportMenuOpen((prev) => !prev);
+  };
+
+  const handleChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
+
   useEffect(() => {
     const userLog = localStorage.getItem("userRole");
     const userIds = localStorage.getItem("userId");
@@ -137,7 +137,7 @@ function PurchaseRequest() {
     const fetchReceivers = async () => {
       try {
         const response = await axios.get(
-          "http://ppemanagement.andrieinthesun.com/retrieve_users.php",
+          "https://ppemanagement.andrieinthesun.com/retrieve_users.php",
           {
             params: {
               role: "DEPARTMENT HEAD,CUSTODIAN",
@@ -156,12 +156,11 @@ function PurchaseRequest() {
     fetchReceivers();
   }, [department]);
 
-  // Fetch Request No. from the backend
   useEffect(() => {
     const fetchRequestNo = async () => {
       try {
         const response = await axios.get(
-          "http://ppemanagement.andrieinthesun.com/getRequestNo.php"
+          "https://ppemanagement.andrieinthesun.com/getRequestNo.php"
         );
         if (response.data.success) {
           setRequestNo(response.data.requestNo); // Set the Request No.
@@ -179,7 +178,6 @@ function PurchaseRequest() {
 
     fetchRequestNo();
   }, []);
-
 
   const handleAddItem = () => {
     const newItem = {
@@ -208,7 +206,7 @@ function PurchaseRequest() {
 
   const handleSaveDraft = async () => {
     try {
-      const response = await axios.post("http://ppemanagement.andrieinthesun.com/storeRequestDraft.php", {
+      const response = await axios.post("https://ppemanagement.andrieinthesun.com/storeRequestDraft.php", {
         items: items,
         purpose: purpose,
         userLogRole: userLogRole,
@@ -223,6 +221,11 @@ function PurchaseRequest() {
           title: "Request submitted successfully!",
           text: `Request No.: ${response.data.custom_id}`,
           confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+            console.log("Draft saved successfully.");
+          }
         });
       } else {
         alert("Failed to submit the request: " + response.data.message);
@@ -234,8 +237,37 @@ function PurchaseRequest() {
   };
 
   const handleSubmitForApproval = async () => {
+    if (requestedName === "") {
+      alert("Please select a receiver for the request.");
+      return;
+    }
+    if (items.length === 0) {
+      alert("Please add at least one item to the request.");
+      return;
+    }
+    const hasEmptyFields = items.some(
+      item =>
+        !item.quantity ||
+        !item.description ||
+        !item.unitPrice ||
+        item.quantity === "" ||
+        item.description === "" ||
+        item.unitPrice === "" ||
+        isNaN(item.quantity) ||
+        isNaN(item.unitPrice)
+    );
+
+    if (hasEmptyFields) {
+      alert("Please fill in all fields (quantity, description, unit price) for each item.");
+      return;
+    }
+
+    if (!purpose.trim()) {
+      alert("Please provide a purpose for the request.");
+      return;
+    }
     try {
-      const response = await axios.post("http://ppemanagement.andrieinthesun.com/storeRequest.php", {
+      const response = await axios.post("https://ppemanagement.andrieinthesun.com/storeRequest.php", {
         items: items,
         purpose: purpose,
         userLogRole: userLogRole,
@@ -250,6 +282,11 @@ function PurchaseRequest() {
           title: "Request submitted successfully!",
           text: `Request No.: ${response.data.custom_id}`,
           confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+            console.log("Draft saved successfully.");
+          }
         });
       } else {
         alert("Failed to submit the request: " + response.data.message);
@@ -258,7 +295,7 @@ function PurchaseRequest() {
       console.error("Error submitting for approval:", error);
       alert("Failed to submit for approval.");
     }
-};
+  };
 
   return (
     <div style={{display: "flex"}}>
@@ -266,108 +303,109 @@ function PurchaseRequest() {
     
       {/* Drawer*/}
       <Drawer
-              variant="permanent"
-              sx={{
-                width: drawerWidth,
-                flexShrink: 0,
-                "& .MuiDrawer-paper": {
-                  width: drawerWidth,
-                  boxSizing: "border-box",
-                  marginTop: "4rem",
-                  backgroundColor: "#FFFF",
-                  cursor: "pointer",
-                },
-              }}
-            >
-              <List>
-                <ListItem button onClick={() => handleListItemClick("/home-1")}>
-                  <ListItemIcon>
-                    <HomeIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Home" />
-                </ListItem>
-                <ListItem button onClick={() => handleListItemClick("/purchase-request")} style={{ color: "#0F1D9F"}}>
-                  <ListItemIcon>
-                    <AssignmentIcon style={{ color: "#0F1D9F"}}/>
-                  </ListItemIcon>
-                  <ListItemText primary="Purchase Request" />
-                </ListItem>
-                <ListItem button onClick={() => handleListItemClick("/purchase-list")} >
-                  <ListItemIcon>
-                    <AssignmentIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Purchase List" />
-                </ListItem>
-                <ListItem button onClick={() => handleListItemClick("/inspection")}>
-                  <ListItemIcon>
-                    <ReportIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Inspection" />
-                </ListItem>
-                <ListItem button onClick={toggleReportMenu}>
-                  <ListItemIcon>
-                    <ReportIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Records" />
-                  {isReportMenuOpen ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={isReportMenuOpen} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
-                    <ListItem
-                      button
-                      style={{ paddingLeft: 32 }}
-                      onClick={() => handleListItemClick("/par-ics")}
-                    >
+        variant="permanent"
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
+            width: drawerWidth,
+            boxSizing: "border-box",
+            marginTop: "4rem",
+            backgroundColor: "#FFFF",
+            cursor: "pointer",
+          },
+        }}
+      >
+        <List>
+          <ListItem button onClick={() => handleListItemClick("/home-1")}>
+            <ListItemIcon>
+              <HomeIcon />
+            </ListItemIcon>
+            <ListItemText primary="Home" />
+          </ListItem>
+          <ListItem button onClick={() => handleListItemClick("/purchase-request")} style={{ color: "#0F1D9F"}}>
+            <ListItemIcon>
+              <AssignmentIcon style={{ color: "#0F1D9F"}}/>
+            </ListItemIcon>
+            <ListItemText primary="Purchase Request" />
+          </ListItem>
+          <ListItem button onClick={() => handleListItemClick("/purchase-list")} >
+            <ListItemIcon>
+              <AssignmentIcon />
+            </ListItemIcon>
+            <ListItemText primary="Purchase List" />
+          </ListItem>
+          <ListItem button onClick={() => handleListItemClick("/inspection")}>
+            <ListItemIcon>
+              <ReportIcon />
+            </ListItemIcon>
+            <ListItemText primary="Inspection" />
+          </ListItem>
+          <ListItem button onClick={toggleReportMenu}>
+            <ListItemIcon>
+              <ReportIcon />
+            </ListItemIcon>
+            <ListItemText primary="Records" />
+            {isReportMenuOpen ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={isReportMenuOpen} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem
+                button
+                style={{ paddingLeft: 32 }}
+                onClick={() => handleListItemClick("/par-ics")}
+              >
+                <ListItemIcon>
+                  <AssignmentIcon/>
+                </ListItemIcon>
+                <ListItemText primary="PAR & ICS" />
+              </ListItem>
+              <ListItem
+                button
+                style={{ paddingLeft: 32 }}
+                onClick={() => handleListItemClick("/inventory")}
+              >
+                <ListItemIcon>
+                                <AssignmentIcon/>
+                              </ListItemIcon>
+                <ListItemText primary="Inventory" />
+              </ListItem>
+            </List>
+          </Collapse>
+          <ListItem button onClick={() => handleListItemClick("/account-management")}>
+            <ListItemIcon>
+              <PeopleIcon />
+            </ListItemIcon>
+            <ListItemText primary="Account Management" />
+          </ListItem>
+          <ListItem button onClick={() => handleListItemClick("/department")}>
                       <ListItemIcon>
-                        <AssignmentIcon/>
+                        <TableChartIcon/>
                       </ListItemIcon>
-                      <ListItemText primary="PAR & ICS" />
+                      <ListItemText primary="Department" />
                     </ListItem>
-                    <ListItem
-                      button
-                      style={{ paddingLeft: 32 }}
-                      onClick={() => handleListItemClick("/inventory")}
-                    >
-                      <ListItemIcon>
-                                      <AssignmentIcon/>
-                                    </ListItemIcon>
-                      <ListItemText primary="Inventory" />
-                    </ListItem>
-                  </List>
-                </Collapse>
-                <ListItem button onClick={() => handleListItemClick("/account-management")}>
-                  <ListItemIcon>
-                    <PeopleIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Account Management" />
-                </ListItem>
-                <ListItem button onClick={() => handleListItemClick("/department")}>
-                            <ListItemIcon>
-                              <TableChartIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary="Department" />
-                          </ListItem>
-                <ListItem button onClick={() => handleListItemClick("/notification")}>
-                  <ListItemIcon>
-                    <Notifications />
-                  </ListItemIcon>
-                  <ListItemText primary="Notification" />
-                </ListItem>
-                <ListItem button onClick={() => handleListItemClick("/profile")}>
-                  <ListItemIcon>
-                    <AccountCircleIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Profile" />
-                </ListItem>
-                <ListItem button onClick={handleLogout}>
-                  <ListItemIcon>
-                    <LogoutIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Logout" />
-                </ListItem>
-              </List>
-            </Drawer>
-      <div style={{padding: "20px", marginTop: "3.5rem" }}>
+          <ListItem button onClick={() => handleListItemClick("/notification")}>
+            <ListItemIcon>
+              <Notifications />
+            </ListItemIcon>
+            <ListItemText primary="Notification" />
+          </ListItem>
+          <ListItem button onClick={() => handleListItemClick("/profile")}>
+            <ListItemIcon>
+              <AccountCircleIcon />
+            </ListItemIcon>
+            <ListItemText primary="Profile" />
+          </ListItem>
+          <ListItem button onClick={handleLogout}>
+            <ListItemIcon>
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItem>
+        </List>
+      </Drawer>
+      
+      <div style={{ flexGrow: 1, padding: "80px 40px" }}>
         <h1 style={{ color: "#0F1D9F" }}>Purchase Request</h1>
         <p style={{ color: "#666" }}>Record of Property or Equipment Issued</p>
 
@@ -396,7 +434,7 @@ function PurchaseRequest() {
                 if (newValue) {
                   setDepartment(newValue.department); // Update department with the selected user's department
                   setUserRoles(newValue.role);
-                  setRequestedBy(newValue.user_id); // Update requestedBy with the selected user's full name
+                  setRequestedBy(newValue.user_id);
                 }
               }}
               filterOptions={(options, { inputValue }) =>
@@ -530,6 +568,7 @@ function PurchaseRequest() {
               borderColor: "#0F1D9F",
               color: "#0F1D9F",
             }}
+            onClick={() => window.location.reload()}
           >
             Cancel
           </Button>

@@ -50,7 +50,7 @@ function DH_PurchaseRequest() {
   const [isReportMenuOpen, setReportMenuOpen] = useState(false); // Track sub-menu visibility
   const [requestedBy, setRequestedBy] = useState("");
 
-    const [firstName, setFirstName] = useState("");
+  const [firstName, setFirstName] = useState("");
     const [userRole, setUserRole] = useState("");
 
   useEffect(() => {
@@ -79,6 +79,7 @@ function DH_PurchaseRequest() {
             navigate("/")
           }
     }, [navigate]);
+
 
   const handleListItemClick = (path) => {
       navigate(path);
@@ -137,7 +138,7 @@ function DH_PurchaseRequest() {
     const fetchReceivers = async () => {
       try {
         const response = await axios.get(
-          "http://ppemanagement.andrieinthesun.com/retrieve_users.php",
+          "https://ppemanagement.andrieinthesun.com/retrieve_users.php",
           {
             params: {
               role: "DEPARTMENT HEAD,CUSTODIAN",
@@ -161,7 +162,7 @@ function DH_PurchaseRequest() {
     const fetchRequestNo = async () => {
       try {
         const response = await axios.get(
-          "http://ppemanagement.andrieinthesun.com/getRequestNo.php"
+          "https://ppemanagement.andrieinthesun.com/getRequestNo.php"
         );
         if (response.data.success) {
           setRequestNo(response.data.requestNo); // Set the Request No.
@@ -208,7 +209,7 @@ function DH_PurchaseRequest() {
 
   const handleSaveDraft = async () => {
     try {
-      const response = await axios.post("http://ppemanagement.andrieinthesun.com/storeRequestDraft.php", {
+      const response = await axios.post("https://ppemanagement.andrieinthesun.com/storeRequestDraft.php", {
         items: items,
         purpose: purpose,
         userLogRole: userLogRole,
@@ -234,8 +235,38 @@ function DH_PurchaseRequest() {
   };
 
   const handleSubmitForApproval = async () => {
+    if (requestedName === "") {
+      alert("Please select a receiver for the request.");
+      return;
+    }
+    if (items.length === 0) {
+      alert("Please add at least one item to the request.");
+      return;
+    }
+    const hasEmptyFields = items.some(
+      item =>
+        !item.quantity ||
+        !item.description ||
+        !item.unitPrice ||
+        item.quantity === "" ||
+        item.description === "" ||
+        item.unitPrice === "" ||
+        isNaN(item.quantity) ||
+        isNaN(item.unitPrice)
+    );
+
+    if (hasEmptyFields) {
+      alert("Please fill in all fields (quantity, description, unit price) for each item.");
+      return;
+    }
+
+    if (!purpose.trim()) {
+      alert("Please provide a purpose for the request.");
+      return;
+    }
+
     try {
-      const response = await axios.post("http://ppemanagement.andrieinthesun.com/storeRequest.php", {
+      const response = await axios.post("https://ppemanagement.andrieinthesun.com/storeRequest.php", {
         items: items,
         purpose: purpose,
         userLogRole: userLogRole,
@@ -250,6 +281,11 @@ function DH_PurchaseRequest() {
           title: "Request submitted successfully!",
           text: `Request No.: ${response.data.custom_id}`,
           confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+            console.log("Draft saved successfully.");
+          }
         });
       } else {
         alert("Failed to submit the request: " + response.data.message);
@@ -355,7 +391,7 @@ function DH_PurchaseRequest() {
                 </ListItem>
               </List>
             </Drawer>
-      <div style={{padding: "20px", marginTop: "3.5rem" }}>
+      <div style={{ flexGrow: 1, padding: "80px 40px" }}>
         <h1 style={{ color: "#0F1D9F" }}>Purchase Request</h1>
         <p style={{ color: "#666" }}>Record of Property or Equipment Issued</p>
 
@@ -518,6 +554,7 @@ function DH_PurchaseRequest() {
               borderColor: "#0F1D9F",
               color: "#0F1D9F",
             }}
+            onClick={() => window.location.reload()} // This will reload the page
           >
             Cancel
           </Button>

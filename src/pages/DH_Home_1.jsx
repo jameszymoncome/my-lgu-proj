@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./Home_1.css";
+import "./DH_Home.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faCamera, faClipboard } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -36,6 +36,7 @@ import {
   Legend,
 } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
+import axios from "axios";
 
 // Register required elements
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -56,13 +57,17 @@ const DH_Home_1 = () => {
 
   const [firstName, setFirstName] = useState("");
   const [userRole, setUserRole] = useState("");
-  
-    useEffect(() => {
+  const [userDepartment, setUserDepartment] = useState("");
+  const [allRequests, setAllRequests] = useState([]);
+
+  useEffect(() => {
           const storedFirstName = localStorage.getItem("firstName");
           const storeduserRole = localStorage.getItem("userRole");
+          const storedUserDepartment = localStorage.getItem("userDepartment");
           if (storedFirstName || storeduserRole) {
               setFirstName(storedFirstName);
               setUserRole(storeduserRole);
+              setUserDepartment(storedUserDepartment);
           } else {
               navigate("/login"); // Redirect to login if no first name is found
           }
@@ -112,7 +117,7 @@ const DH_Home_1 = () => {
     const userId = localStorage.getItem("userId"); // or whatever key you use for user id
     if (!userId) return;
 
-    fetch(`http://ppemanagement.andrieinthesun.com/dh_home_details.php?user_id=${userId}`)
+    fetch(`https://ppemanagement.andrieinthesun.com/dh_home_details.php?user_id=${userId}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -123,6 +128,19 @@ const DH_Home_1 = () => {
           });
         }
       });
+    
+    const fetchRequestData = async () => {
+      try {
+        const response = await axios.get("https://ppemanagement.andrieinthesun.com/getRequestData.php");
+        console.log("Request Data:", response.data.data);
+        setAllRequests(response.data.data);
+      } catch (error) {
+        console.error("Error fetching request data:", error);
+        alert("Failed to fetch request data.");
+      }
+    };
+
+    fetchRequestData();
   }, []);
 
 
@@ -191,22 +209,23 @@ const DH_Home_1 = () => {
             : "USER";
 
     // Example data for requests
-    const allRequests = [
-        { date: "2023-10-01", department: "IT Department", status: "Pending" },
-        { date: "2023-09-28", department: "HR Department", status: "Approved" },
-        { date: "2023-09-25", department: "Finance", status: "Rejected" },
-        { date: "2023-09-20", department: "IT Department", status: "Approved" },
-        { date: "2023-09-18", department: "HR Department", status: "Pending" },
-    ];
+    // const allRequests = [
+    //     { date: "2023-10-01", department: "IT Department", status: "Pending" },
+    //     { date: "2023-09-28", department: "HR Department", status: "Approved" },
+    //     { date: "2023-09-25", department: "Finance", status: "Rejected" },
+    //     { date: "2023-09-20", department: "IT Department", status: "Approved" },
+    //     { date: "2023-09-18", department: "HR Department", status: "Pending" },
+    // ];
+    
 
     // Filter data based on user role
     const filteredRequests =
         userRole === "ADMIN"
             ? allRequests // Admin sees all requests
             : userRole === "DEPARTMENT HEAD"
-            ? allRequests.filter((request) => request.department === "IT Department") // Example: Department Head sees only their department's requests
+            ? allRequests.filter((request) => request.department === userDepartment) // Example: Department Head sees only their department's requests
             : userRole === "CUSTODIAN"
-            ? allRequests.filter((request) => request.department === "IT Department" && request.status === "Pending") // Example: Custodian sees only their pending requests
+            ? allRequests.filter((request) => request.department === userDepartment && request.status === "Pending") // Example: Custodian sees only their pending requests
             : [];
 
   return (
@@ -306,7 +325,7 @@ const DH_Home_1 = () => {
         </List>
       </Drawer>
 
-      <div className="main-content">
+      <div className="main-contents">
             <header className="home-header">
                 <div className="header-content">
                     <h1> Welcome Department Head, to the Inventory Management System
