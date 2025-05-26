@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"; // Import useState and useEffect
-import "./Item_history.css";
+import "../Item_history.css";
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Collapse, Typography } from "@mui/material";
-import Header from "../components/Header/Header.jsx";
+import Header from "../../components/Header/Header.jsx";
 import HomeIcon from "@mui/icons-material/Home";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import ReportIcon from "@mui/icons-material/Report";
@@ -125,7 +125,7 @@ const buttonStyles = {
     border: "1px solid #979797",
   }));
  
-function Item_history() {
+function CTN_Item_history() {
   const { formIds, descript } = useParams();
   const navigate = useNavigate();
 
@@ -139,33 +139,33 @@ function Item_history() {
   const [countedQuantity, setCountedQuantity] = useState(0);
 
   const [firstName, setFirstName] = useState("");
-      const [userRole, setUserRole] = useState("");
-      
-        useEffect(() => {
-          const storedFirstName = localStorage.getItem("firstName");
-          const storeduserRole = localStorage.getItem("userRole");
-          if (storedFirstName || storeduserRole) {
-              setFirstName(storedFirstName);
-              setUserRole(storeduserRole);
-          } else {
-              navigate("/login"); // Redirect to login if no first name is found
+    const [userRole, setUserRole] = useState("");
+    
+      useEffect(() => {
+        const storedFirstName = localStorage.getItem("firstName");
+        const storeduserRole = localStorage.getItem("userRole");
+        if (storedFirstName || storeduserRole) {
+            setFirstName(storedFirstName);
+            setUserRole(storeduserRole);
+        } else {
+            navigate("/login"); // Redirect to login if no first name is found
+        }
+  
+          if (storeduserRole === "DEPARTMENT HEAD")  {
+            navigate("/dh-home-1")
           }
-    
-            if (storeduserRole === "DEPARTMENT HEAD")  {
-              navigate("/dh-home-1")
-            }
-    
-            else if (storeduserRole === "CUSTODIAN") {
-              navigate("/ctn-home-1")
-            }
-    
-            else if (storeduserRole === "ADMIN") {
-            }
-    
-            else {
-              navigate("/")
-            }
-      }, [navigate]);
+  
+          else if (storeduserRole === "CUSTODIAN") {
+          }
+  
+          else if (storeduserRole === "ADMIN") {
+            navigate("/home-1")
+          }
+  
+          else {
+            navigate("/")
+          }
+    }, [navigate]);
 
   useEffect(() => {
     const getDataStatus = async () => {
@@ -323,29 +323,23 @@ function Item_history() {
                     }}
                   >
                     <List>
-                      <ListItem button onClick={() => handleListItemClick("/home-1")} >
+                      <ListItem button onClick={() => handleListItemClick("/ctn-home-1")} >
                         <ListItemIcon>
                           <HomeIcon />
                         </ListItemIcon>
                         <ListItemText primary="Home" />
                       </ListItem>
-                      <ListItem button onClick={() => handleListItemClick("/purchase-request")}>
+                      <ListItem button onClick={() => handleListItemClick("/ctn-purchase-request")} >
                         <ListItemIcon>
                           <AssignmentIcon />
                         </ListItemIcon>
                         <ListItemText primary="Purchase Request" />
                       </ListItem>
-                      <ListItem button onClick={() => handleListItemClick("/purchase-list")}>
+                      <ListItem button onClick={() => handleListItemClick("/ctn-purchase-list")} >
                         <ListItemIcon>
                           <AssignmentIcon />
                         </ListItemIcon>
                         <ListItemText primary="Purchase List" />
-                      </ListItem>
-                      <ListItem button onClick={() => handleListItemClick("/inspection")} >
-                        <ListItemIcon>
-                          <ReportIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Inspection" />
                       </ListItem>
                       <ListItem button onClick={toggleReportMenu}>
                         <ListItemIcon>
@@ -359,7 +353,8 @@ function Item_history() {
                           <ListItem
                             button
                             style={{ paddingLeft: 32 }}
-                            onClick={() => handleListItemClick("/par-ics")}
+                            onClick={() => handleListItemClick("/ctn-parics1")}
+                            
                           >
                             <ListItemIcon>
                                             <AssignmentIcon />
@@ -369,7 +364,7 @@ function Item_history() {
                           <ListItem
                             button
                             style={{ paddingLeft: 32, color: "#0F1D9F" }}
-                            onClick={() => handleListItemClick("/inventory")}
+                            onClick={() => handleListItemClick("/ctn-inventory")}
                           >
                             <ListItemIcon>
                                             <AssignmentIcon style={{ color: "#0F1D9F"}}/>
@@ -378,25 +373,13 @@ function Item_history() {
                           </ListItem>
                         </List>
                       </Collapse>
-                      <ListItem button onClick={() => handleListItemClick("/account-management")}>
-                        <ListItemIcon>
-                          <PeopleIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Account Management" />
-                      </ListItem>
-                      <ListItem button onClick={() => handleListItemClick("/department")}>
-                                                  <ListItemIcon>
-                                                    <TableChartIcon/>
-                                                  </ListItemIcon>
-                                                  <ListItemText primary="Department" />
-                                                </ListItem>
-                      <ListItem button onClick={() => handleListItemClick("/notification")}>
+                      <ListItem button onClick={() => handleListItemClick("/ctn-notification")}>
                         <ListItemIcon>
                           <Notifications />
                         </ListItemIcon>
                         <ListItemText primary="Notification" />
                       </ListItem>
-                      <ListItem button onClick={() => handleListItemClick("/profile")}>
+                      <ListItem button onClick={() => handleListItemClick("/ctn-profile")}>
                         <ListItemIcon>
                           <AccountCircleIcon />
                         </ListItemIcon>
@@ -469,4 +452,4 @@ function Item_history() {
 }
 
 
-export default Item_history;
+export default CTN_Item_history;

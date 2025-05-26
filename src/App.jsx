@@ -54,6 +54,8 @@ import DH_PAR_ICS2 from "./pages/DeptHeadPages/DH_PAR_ICS2.jsx";
 import CTN_PAR_ICS2 from "./pages/CustodianPages/CTN_PAR_ICS2.jsx";
 import ScannedItem from "./pages/ScannedItem.jsx";
 import DH_ScannedItem from "./pages/DeptHeadPages/DH_ScannedItems.jsx";
+import CTN_Item_history from "./pages/CustodianPages/CTN_Item_history.jsx";
+import DH_Item_history from "./pages/DeptHeadPages/DH_Item_history.jsx";
 
 
 function App() {
@@ -77,7 +79,6 @@ function App() {
         <Route path="/home-user" element={<Home_user />} />
         <Route path="/par-ics2/:ids" element={<PAR_ICS2 />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/item-history" element={<Item_history />} />
         <Route path="/inspec-scanner" element={<Inspection_Scanner />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/encoder-ppeentry" element={<EncoderPPE_Entry />} />
@@ -119,6 +120,9 @@ function App() {
         <Route path="/ctn-par-ics2/:ids" element={<CTN_PAR_ICS2 />} />
         <Route path="/scanned-item" element={<ScannedItem />} />
         <Route path="/dh-scanned-item" element={<DH_ScannedItem />} />
+        <Route path="/item-history/:formIds/:descript" element={<Item_history />} />
+        <Route path="/ctn-item-history/:formIds/:descript" element={<CTN_Item_history />} />
+        <Route path="/dh-item-history/:formIds/:descript" element={<DH_Item_history />} />
       </Routes>
     </Router>
   );
