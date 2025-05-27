@@ -371,11 +371,23 @@ const Inspection = () => {
                             <p className="property-number">Property/Inventory Number: {itemGet.item_id}</p>
                             <p>PAR/ICS No.: {itemGet.form_id}</p>
                             <p>Department/Custodian: {itemGet.department} {itemGet.fullname}</p>
+                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                              <p style={{ margin: 0 }}>Remarks:</p>
+                              <input
+                                type="text"
+                                value={itemGet.remarks || ""}
+                                onChange={e => setItemGet({ ...itemGet, remarks: e.target.value })}
+                                placeholder="Enter remarks"
+                                style={{ flex: 1, padding: "6px 10px", borderRadius: "4px", border: "1px solid #ccc" }}
+                              />
+                            </div>
                             {/* <p>Condition/Status: {itemInfo.conditionStatus}</p> */}
 
                             <div className="condition-buttons">
                                 <button onClick={() => updateScanItem(itemGet.item_id, 'Serviceable')}>Serviceable</button>
                                 <button onClick={() => updateScanItem(itemGet.item_id, 'Unserviceable')}>Unserviceable</button>
+                                <button onClick={() => updateScanItem(itemGet.item_id, 'Repair')}>Repair</button>
+                                <button onClick={() => updateScanItem(itemGet.item_id, 'Disposed')}>Dispose</button>
                             </div>
                         </>
                     ) : (
